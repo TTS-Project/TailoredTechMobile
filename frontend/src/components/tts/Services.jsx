@@ -25,8 +25,8 @@ const SERVICES = [
 
 export function Services() {
   return (
-    <section id="services" className="relative py-24 md:py-32 bg-void">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+    <section id="services" className="relative py-20 sm:py-24 md:py-32 bg-void">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <Reveal>
           <div className="eyebrow">What we build</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome max-w-3xl">

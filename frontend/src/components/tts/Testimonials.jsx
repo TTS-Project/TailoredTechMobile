@@ -10,8 +10,8 @@ const T = [
 
 export function Testimonials() {
   return (
-    <section className="py-24 md:py-32 bg-void">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 mb-12 md:mb-16">
+    <section className="py-20 sm:py-24 md:py-32 bg-void">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 mb-12 md:mb-16">
         <Reveal>
           <div className="eyebrow">Field Reports</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">
@@ -19,7 +19,7 @@ export function Testimonials() {
           </h2>
         </Reveal>
       </div>
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <div className="grid gap-6 md:gap-7 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
           {T.map((t, i) => (
             <Reveal key={i} delay={i * 80}>

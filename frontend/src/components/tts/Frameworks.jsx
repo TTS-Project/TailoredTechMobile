@@ -12,9 +12,9 @@ const F = [
 
 export function Frameworks() {
   return (
-    <section className="relative py-24 md:py-32 bg-void overflow-hidden">
+    <section className="relative py-20 sm:py-24 md:py-32 bg-void overflow-hidden">
       <div className="absolute inset-0 circuit-grid opacity-[0.5]" />
-      <div className="relative max-w-[1400px] mx-auto px-6 md:px-12">
+      <div className="relative max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <Reveal>
           <div className="eyebrow">Thought Leadership</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome max-w-3xl">

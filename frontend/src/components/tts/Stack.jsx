@@ -10,8 +10,8 @@ const TECH = [
 
 export function Stack() {
   return (
-    <section className="py-24 md:py-32 bg-void">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 grid md:grid-cols-12 gap-10">
+    <section className="py-20 sm:py-24 md:py-32 bg-void">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 grid md:grid-cols-12 gap-10">
         <Reveal className="md:col-span-4">
           <div className="eyebrow">The Toolkit</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome leading-tight">

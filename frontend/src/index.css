@@ -30,13 +30,14 @@
   --border-glass: rgba(255, 255, 255, 0.06);
 }
 
-html { scroll-behavior: smooth; background-color: var(--bg-void); }
+html { scroll-behavior: smooth; background-color: var(--bg-void); overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--bg-void);
   color: var(--text-primary);
   font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 code { font-family: 'Geist Mono', monospace; }
 
@@ -152,10 +153,19 @@ code { font-family: 'Geist Mono', monospace; }
 .snap-hero-root .scroll-hint__arrow::after { content:''; position:absolute; top:-100%; left:0; width:100%; height:100%; background:#C9A84C; animation:snapArrowDrop 1.6s ease infinite; }
 @keyframes snapArrowDrop { 0% { top:-100%; } 100% { top:100%; } }
 @media (max-width: 768px) {
-  .snap-hero-root .section__content { padding:2rem 1.5rem; }
-  .snap-hero-root .section__title { font-size:clamp(1.6rem,7vw,2.4rem); }
-  .snap-hero-root .progress-rail { right:1rem; }
-  .snap-hero-root .section-counter { right:1rem; bottom:1.5rem; }
+  .snap-hero-root .section__content { padding: 24px 20px 40px 20px; max-width: calc(100% - 48px); }
+  .snap-hero-root .section__title { font-size: clamp(1.75rem, 6.5vw, 2.4rem); line-height: 1.1; }
+  .snap-hero-root .section__sub { font-size: 0.9375rem; line-height: 1.55; max-width: 100%; }
+  .snap-hero-root .progress-rail { right: 14px; gap: 8px; padding: 8px 0; }
+  .snap-hero-root .progress-dot { width: 10px; height: 10px; }
+  .snap-hero-root .section-counter { right: 16px; bottom: 18px; }
+  .snap-hero-root .section__step { font-size: 10px; letter-spacing: 0.16em; }
+  .snap-hero-root .scroll-hint { bottom: 14px; }
+}
+@media (max-width: 430px) {
+  .snap-hero-root .section__content { padding: 20px 16px 36px 16px; }
+  .snap-hero-root .progress-rail { right: 10px; }
+  .snap-hero-root .section-counter { right: 12px; }
 }
 
 /* 3D orb hero (CSS only) */
@@ -187,3 +197,13 @@ code { font-family: 'Geist Mono', monospace; }
 .nn-node { animation: nn-node-pulse 2.4s ease-in-out infinite; }
 
 @layer base { * { border-color: var(--border-subtle); } }
+
+.scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hidden::-webkit-scrollbar { display: none; }
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

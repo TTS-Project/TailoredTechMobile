@@ -4,36 +4,36 @@ import { Hero3D } from './Hero3D';
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden min-h-[100dvh] pt-32 pb-20 bg-grad-hero">
+    <section id="top" className="relative overflow-hidden min-h-[100dvh] pt-28 sm:pt-32 pb-16 sm:pb-20 bg-grad-hero">
       <div className="absolute inset-0 circuit-grid opacity-[0.5] pointer-events-none" />
       <div className="absolute -top-40 -left-40 w-[680px] h-[680px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,168,67,0.18), transparent 60%)', filter: 'blur(48px)' }} />
       <div className="absolute -bottom-40 right-0 w-[680px] h-[680px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(136,85,255,0.22), transparent 60%)', filter: 'blur(48px)' }} />
 
-      <div className="relative max-w-[1400px] mx-auto px-6 md:px-12 grid md:grid-cols-[55%_45%] gap-12 md:gap-8 items-center">
+      <div className="relative max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 grid md:grid-cols-[55%_45%] gap-10 md:gap-8 items-center">
         <div>
-          <div className="eyebrow mb-6">[ AI Product Studio ]</div>
-          <h1 className="font-display text-[44px] leading-[0.95] sm:text-6xl md:text-[88px] font-extrabold tracking-tighter text-chrome">
+          <div className="eyebrow mb-5 sm:mb-6">[ AI Product Studio ]</div>
+          <h1 className="font-display text-[34px] leading-[1.05] sm:text-5xl md:text-[88px] md:leading-[0.95] font-extrabold tracking-tight md:tracking-tighter text-chrome">
             We Build Intelligence — <span className="gold-text-gradient italic">Tailored.</span>
           </h1>
-          <p className="mt-8 max-w-[58ch] text-base md:text-lg text-secondary-soft leading-relaxed">
+          <p className="mt-6 sm:mt-8 max-w-[58ch] text-base md:text-lg text-secondary-soft leading-relaxed">
             Custom AI applications, embedded systems, and product experiences designed for the companies that refuse to be generic.
           </p>
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <a href="#projects" className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-lg font-semibold transition-all hover:opacity-90 active:scale-[0.98]" style={{background:'var(--gold-bright)', color:'#09090f'}}>
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+            <a href="#projects" className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[52px] rounded-xl font-semibold transition-all hover:opacity-90 active:scale-[0.98]" style={{background:'var(--gold-bright)', color:'#09090f'}}>
               Explore Our Work
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="#contact" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-gold-dim text-gold font-semibold hover:border-gold transition-all active:scale-[0.98]" style={{borderWidth:'1px', borderStyle:'solid'}}>
+            <a href="#contact" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 min-h-[52px] rounded-xl text-gold font-semibold transition-all active:scale-[0.98]" style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}>
               Talk to Us
             </a>
           </div>
-          <div className="mt-14 grid grid-cols-3 gap-4 max-w-xl">
+          <div className="mt-12 md:mt-14 grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-4 max-w-xl">
             {[
               { v: '12+', l: 'Projects Deployed' },
               { v: '2', l: 'Markets · USA · APAC' },
               { v: '100%', l: 'Custom · No Templates' },
             ].map((s) => (
-              <div key={s.l} className="border-l pl-3" style={{borderColor:'var(--gold-dim)'}}>
+              <div key={s.l} className="border-l pl-3 sm:pl-3" style={{borderColor:'var(--gold-dim)'}}>
                 <div className="font-display text-2xl md:text-3xl font-bold text-gold">{s.v}</div>
                 <div className="mt-1 text-[10px] font-mono uppercase tracking-widest text-muted-soft leading-tight">{s.l}</div>
               </div>

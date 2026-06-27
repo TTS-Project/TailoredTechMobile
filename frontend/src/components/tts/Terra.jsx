@@ -11,12 +11,12 @@ const FEATURES = [
 
 export function Terra() {
   return (
-    <section id="terra" className="relative py-24 md:py-32 overflow-hidden">
+    <section id="terra" className="relative py-20 sm:py-24 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-grad-accent" />
       <div className="absolute inset-0 circuit-grid opacity-[0.5]" />
       <div className="absolute -top-40 right-0 w-[520px] h-[520px] rounded-full" style={{background:'radial-gradient(circle, rgba(212,168,67,0.18), transparent 60%)', filter:'blur(40px)'}} />
 
-      <div className="relative max-w-[1400px] mx-auto px-6 md:px-12 grid md:grid-cols-2 gap-14 items-center">
+      <div className="relative max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 grid md:grid-cols-2 gap-14 items-center">
         <Reveal>
           <div className="eyebrow">Flagship Product</div>
           <h2 className="mt-4 font-display text-5xl md:text-7xl font-extrabold tracking-tighter">
@@ -41,11 +41,11 @@ export function Terra() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <a href="#contact" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold transition-all active:scale-[0.98] hover:opacity-90" style={{background:'var(--gold-bright)', color:'#09090f'}}>
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-3">
+            <a href="#contact" className="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[52px] rounded-xl font-semibold transition-all active:scale-[0.98] hover:opacity-90" style={{background:'var(--gold-bright)', color:'#09090f'}}>
               View Case Study <ArrowRight size={16} />
             </a>
-            <a href="#" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-gold-dim text-gold font-semibold transition-all" style={{borderWidth:'1px', borderStyle:'solid'}}>
+            <a href="#" className="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[52px] rounded-xl text-gold font-semibold transition-all active:scale-[0.98]" style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}>
               <Github size={16} /> View on GitHub
             </a>
           </div>

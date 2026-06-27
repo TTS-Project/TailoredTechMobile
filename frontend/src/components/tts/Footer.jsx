@@ -18,7 +18,7 @@ function FooterCol({ title, items }) {
 export function Footer() {
   return (
     <footer className="bg-deep" style={{borderTop:'1px solid var(--border-subtle)'}}>
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-16 grid md:grid-cols-4 gap-10">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 py-14 sm:py-16 grid md:grid-cols-4 gap-10">
         <div>
           <Logo size={44} />
           <p className="mt-5 text-secondary-soft text-sm max-w-xs">Intelligence, tailored.</p>
@@ -44,7 +44,7 @@ export function Footer() {
         </div>
       </div>
       <div style={{borderTop:'1px solid var(--border-subtle)'}}>
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-6 grid md:grid-cols-3 gap-3 text-xs">
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 py-6 grid md:grid-cols-3 gap-3 text-xs">
           <div className="text-chrome-mid">© 2025 Digital Cartel Global LLC. All rights reserved.</div>
           <div className="md:text-center font-display font-bold text-gold">Tailored Tech Solutions</div>
           <div className="md:text-right font-mono text-chrome-mid">Built with intent.</div>

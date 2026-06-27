@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Reveal } from './Reveal';
 
 const PROJECTS = [
@@ -29,17 +30,25 @@ const PROJECTS = [
 
 export function Projects() {
   return (
-    <section id="projects" className="relative py-24 md:py-32 bg-void">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+    <section id="projects" className="relative py-20 sm:py-24 md:py-32 bg-void">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <Reveal>
-          <div className="eyebrow">Selected Work</div>
-          <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">
-            Projects we've <span className="gold-text-gradient">shipped.</span>
-          </h2>
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <div>
+              <div className="eyebrow">Selected Work</div>
+              <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">
+                Projects we've <span className="gold-text-gradient">shipped.</span>
+              </h2>
+            </div>
+            <Link to="/projects" className="inline-flex items-center gap-2 px-5 py-3 min-h-[48px] rounded-xl text-sm font-semibold text-gold transition-all active:scale-[0.98] hover:bg-[var(--gold-glow)]" style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}>
+              View all projects <ArrowRight size={14} />
+            </Link>
+          </div>
         </Reveal>
-        <div className="mt-14 grid md:grid-cols-2 gap-6">
+        <div className="mt-12 sm:mt-14 grid md:grid-cols-2 gap-6">
           {PROJECTS.map((p, i) => (
             <Reveal key={p.name} delay={i * 120}>
+              <Link to="/projects" className="block h-full">
               <article className="group relative h-full overflow-hidden rounded-2xl bg-card-soft transition-all"
                 style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--border-subtle)'}}
                 onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--gold-bright)'}
@@ -58,6 +67,7 @@ export function Projects() {
                   </div>
                 </div>
               </article>
+              </Link>
             </Reveal>
           ))}
         </div>

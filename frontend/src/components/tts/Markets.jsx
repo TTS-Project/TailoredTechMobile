@@ -61,8 +61,8 @@ function WorldMap() {
 
 export function Markets() {
   return (
-    <section className="py-24 md:py-32 bg-deep">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 grid md:grid-cols-2 gap-12 items-center">
+    <section className="py-20 sm:py-24 md:py-32 bg-deep">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12 grid md:grid-cols-2 gap-12 items-center">
         <Reveal>
           <div className="eyebrow">Global Footprint</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">

@@ -25,8 +25,8 @@ const FOUNDERS = [
 
 export function Founders() {
   return (
-    <section id="about" className="relative py-24 md:py-32 bg-deep">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+    <section id="about" className="relative py-20 sm:py-24 md:py-32 bg-deep">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <Reveal>
           <div className="eyebrow">The Builders</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">
