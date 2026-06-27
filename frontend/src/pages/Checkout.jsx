@@ -126,6 +126,7 @@ export default function CheckoutPage() {
                             setError(msg);
                             throw new Error(msg);
                           }
+                          // Only clear the cart AFTER capture is confirmed successful.
                           clearCart();
                           navigate(`/intake?paid=true&order=${encodeURIComponent(json.order_id)}`);
                         }}

@@ -22,7 +22,7 @@ from typing import Optional
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 logger = logging.getLogger("paypal")
 
@@ -87,11 +87,13 @@ async def _get_access_token(client: httpx.AsyncClient) -> str:
 
 # ---- Pricing helpers ------------------------------------------------
 class CartLine(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     id: str = Field(min_length=1, max_length=80)
     qty: int = Field(ge=1, le=99)
 
 
 class CreateOrderPayload(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     items: list[CartLine] = Field(min_length=1, max_length=50)
 
 
