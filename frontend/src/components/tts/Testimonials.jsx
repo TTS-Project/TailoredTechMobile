@@ -22,7 +22,7 @@ export function Testimonials() {
       <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <div className="grid gap-6 md:gap-7 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
           {T.map((t, i) => (
-            <Reveal key={i} delay={i * 80}>
+            <Reveal key={t.a} delay={i * 80}>
               <figure className="h-full glass rounded-2xl p-6 md:p-7 flex flex-col">
                 <div className="text-gold font-display text-4xl leading-none">“</div>
                 <blockquote className="mt-2 text-chrome leading-relaxed text-[15px] flex-1">{t.q}</blockquote>

@@ -8,10 +8,23 @@ import { ProjectFilters } from '../components/dashboard/ProjectFilters';
 
 const FAV_KEY = 'tts:favorite_projects';
 
+// Stores ONLY a list of favourite project slug ids (e.g. ["terra-farming"]).
+// This is a UI preference — no auth tokens, credentials, or PII.
 function loadFavs() {
-  try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+  } catch (err) {
+    console.warn('Failed to read favourite projects from localStorage:', err);
+    return [];
+  }
 }
-function saveFavs(arr) { try { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); } catch (_e) {} }
+function saveFavs(arr) {
+  try {
+    localStorage.setItem(FAV_KEY, JSON.stringify(arr));
+  } catch (err) {
+    console.warn('Failed to persist favourite projects to localStorage:', err);
+  }
+}
 
 function sortProjects(projects, sort) {
   const arr = [...projects];

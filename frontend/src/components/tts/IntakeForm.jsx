@@ -399,7 +399,7 @@ function SuccessSummary({ answers, contact }) {
   };
   ['q1','q2','q4','q5','q8','q12','q13','q17','q18','q20'].forEach(id => {
     const v = labelFor(id);
-    if (v) items.push({ q: find(id).text, a: v });
+    if (v) items.push({ id, q: find(id).text, a: v });
   });
 
   return (
@@ -417,8 +417,8 @@ function SuccessSummary({ answers, contact }) {
         style={{ background: 'rgba(20,20,32,0.72)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-subtle)' }}>
         <div className="text-[11px] font-mono uppercase tracking-widest text-gold-dim mb-4">Your snapshot</div>
         <dl className="space-y-4">
-          {items.map((it, i) => (
-            <div key={i}>
+          {items.map((it) => (
+            <div key={it.id}>
               <dt className="text-xs text-chrome-mid">{it.q}</dt>
               <dd className="mt-1 text-sm text-chrome font-medium">{it.a}</dd>
             </div>
