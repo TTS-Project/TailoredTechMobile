@@ -1,70 +1,37 @@
 import React from 'react';
 
 /**
- * Animated logo:
- *  - circuit-board badge with electrons traversing traces
- *  - sparks pulsing at corners
- *  - shade-in/out glow on the badge
- *  - wordmark: "Tailored" white · "Tech" gold · "Solutions" white
+ * Animated brand logo:
+ *  - Uses the real Tailored Tech circuit-suit mark as the badge
+ *  - Pulsing aura glow (shade in/out) extending beyond the badge
+ *  - Sparks pulsing at corners (inside the badge frame)
+ *  - Wordmark: "Tailored" white · "Tech" gold · "Solutions" white
  */
 export function Logo({ size = 48, showWordmark = true }) {
   return (
     <div className="flex items-center gap-3 select-none">
-      <div
-        className="relative shrink-0 rounded-xl overflow-hidden tts-logo-badge"
-        style={{
-          width: size,
-          height: size,
-          background: 'radial-gradient(circle at 35% 30%, #1a1230 0%, #0a0815 70%)',
-          border: '1px solid rgba(212,168,67,0.55)',
-        }}
-        aria-hidden="true"
-      >
-        {/* circuit svg */}
-        <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full">
-          <defs>
-            <linearGradient id="ttsTraceGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#d4a843" />
-              <stop offset="100%" stopColor="#8855ff" />
-            </linearGradient>
-          </defs>
-          {/* outer board frame */}
-          <rect x="6" y="6" width="52" height="52" rx="8" fill="none" stroke="rgba(212,168,67,0.30)" strokeWidth="0.6" />
-          {/* horizontal & vertical traces */}
-          <path d="M6 22 H22 V14 H42 V22 H58" fill="none" stroke="url(#ttsTraceGrad)" strokeWidth="0.9" />
-          <path d="M6 42 H18 V52 H46 V42 H58" fill="none" stroke="url(#ttsTraceGrad)" strokeWidth="0.9" />
-          <path d="M22 22 V42" fill="none" stroke="url(#ttsTraceGrad)" strokeWidth="0.9" />
-          <path d="M42 22 V42" fill="none" stroke="url(#ttsTraceGrad)" strokeWidth="0.9" />
-          <path d="M32 14 V52" fill="none" stroke="url(#ttsTraceGrad)" strokeWidth="0.6" strokeDasharray="2 2" opacity="0.55" />
-          {/* solder nodes */}
-          {[[22,22],[42,22],[22,42],[42,42],[32,32]].map(([x,y],i)=>(
-            <circle key={i} cx={x} cy={y} r="1.6" fill="#d4a843" />
-          ))}
-          {/* corner pads */}
-          {[[10,10],[54,10],[10,54],[54,54]].map(([x,y],i)=>(
-            <rect key={i} x={x-2} y={y-2} width="4" height="4" rx="0.8" fill="rgba(212,168,67,0.55)" />
-          ))}
-          {/* electrons flowing along traces */}
-          <circle r="1.4" fill="#fff7d6" className="tts-electron-1">
-            <animateMotion dur="2.4s" repeatCount="indefinite" path="M6 22 H22 V14 H42 V22 H58" />
-          </circle>
-          <circle r="1.4" fill="#fff7d6" className="tts-electron-2">
-            <animateMotion dur="3.2s" repeatCount="indefinite" path="M58 42 H46 V52 H18 V42 H6" />
-          </circle>
-          <circle r="1.2" fill="#d4a843" className="tts-electron-3">
-            <animateMotion dur="2.8s" repeatCount="indefinite" path="M22 22 V42" />
-          </circle>
-          <circle r="1.2" fill="#d4a843" className="tts-electron-4">
-            <animateMotion dur="3.4s" repeatCount="indefinite" path="M42 42 V22" />
-          </circle>
-        </svg>
-        {/* sparks */}
-        <span className="tts-spark" style={{ top: '8%', left: '8%' }} />
-        <span className="tts-spark" style={{ top: '8%', right: '8%', animationDelay: '0.7s' }} />
-        <span className="tts-spark" style={{ bottom: '8%', left: '12%', animationDelay: '1.4s' }} />
-        <span className="tts-spark" style={{ bottom: '8%', right: '8%', animationDelay: '2.1s' }} />
-        {/* shade glow overlay */}
-        <span className="tts-logo-glow" />
+      {/* Outer wrapper hosts the aura (no clipping) */}
+      <div className="relative shrink-0 tts-logo-badge" style={{ width: size, height: size }} aria-hidden="true">
+        {/* Pulsing aura glow — sits behind, can extend outside */}
+        <span className="tts-logo-aura" />
+        {/* Inner crop frame holds the real brand image and sparks */}
+        <div className="relative w-full h-full overflow-hidden rounded-xl">
+          <img
+            src="/logos/tts-brand.jpeg"
+            alt="Tailored Tech Solutions logo"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: '50% 18%', transform: 'scale(2.05)', transformOrigin: '50% 30%' }}
+          />
+          {/* Soft inner highlight + frame */}
+          <span className="absolute inset-0 rounded-xl pointer-events-none" style={{
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(212,168,67,0.32)',
+          }} />
+          {/* Sparks (clipped to badge) */}
+          <span className="tts-spark" style={{ top: '8%',  left: '8%' }} />
+          <span className="tts-spark" style={{ top: '8%',  right: '8%',  animationDelay: '0.7s' }} />
+          <span className="tts-spark" style={{ bottom: '8%', left: '12%', animationDelay: '1.4s' }} />
+          <span className="tts-spark" style={{ bottom: '8%', right: '8%', animationDelay: '2.1s' }} />
+        </div>
       </div>
 
       {showWordmark && (

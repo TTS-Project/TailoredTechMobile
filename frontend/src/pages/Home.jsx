@@ -5,7 +5,6 @@ import { Hero } from '../components/tts/Hero';
 import { Marquee } from '../components/tts/Marquee';
 import { Services } from '../components/tts/Services';
 import { Projects } from '../components/tts/Projects';
-import { Terra } from '../components/tts/Terra';
 import { Founders } from '../components/tts/Founders';
 import { Markets } from '../components/tts/Markets';
 import { Frameworks } from '../components/tts/Frameworks';
@@ -23,7 +22,6 @@ export default function Home() {
       <Marquee />
       <Services />
       <Projects />
-      <Terra />
       <Founders />
       <Markets />
       <Frameworks />
