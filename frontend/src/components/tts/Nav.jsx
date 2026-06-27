@@ -3,6 +3,8 @@ import { Menu, X, ChevronDown, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { UserMenu } from './UserMenu';
 
 // Top-level links. "Projects" contains a submenu with Terra.
 const LINKS = [
@@ -33,6 +35,7 @@ export function Nav() {
   const [active, setActive] = useState('');
   const [mobileSub, setMobileSub] = useState('');
   const { count } = useCart();
+  const { isAuthed } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -174,6 +177,8 @@ export function Nav() {
           )}
         </Link>
 
+        {isAuthed && <div className="hidden md:block ml-2"><UserMenu /></div>}
+
         <Link to="/checkout"
           data-testid="nav-cart-button-mobile"
           aria-label={`Cart (${count} item${count === 1 ? '' : 's'})`}
@@ -185,6 +190,8 @@ export function Nav() {
               style={{background:'var(--gold-bright)', color:'#09090f'}}>{count}</span>
           )}
         </Link>
+
+        {isAuthed && <div className="md:hidden mr-1"><UserMenu /></div>}
 
         <button onClick={() => setOpen((v) => !v)} className="md:hidden text-chrome p-2 -mr-2 w-12 h-12 flex items-center justify-center" aria-label="Menu" aria-expanded={open}>
           {open ? <X size={22} /> : <Menu size={22} />}

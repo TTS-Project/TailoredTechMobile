@@ -1,0 +1,52 @@
+{
+  "summary": "Full backend + frontend testing of the JWT-based Apple-glass auth gate. Backend: 13/14 tests passed (1 xfail for known brute-force bug). Register/login/me/logout/cookies/bearer/seeded-admin/regression all green. Frontend: every requested flow worked end-to-end on https://custom-ai-build-7.preview.emergentagent.com — fresh visitor sees Hero, scroll past Hero reveals the frosted gate (one-viewport cap verified — scrollY stayed at 8640 after scrollBy 5000), toggle-register reveals name field, registration dissolves the gate (~700ms blur-out), avatar shows first initial, dropdown shows name/email + signout, reload preserves session (cookie+localStorage), signout clears session and gate re-appears, wrong password renders 'Invalid email or password.' as a STRING (not [object Object]) inline, and admin gwaltney@tailoredtechsolutions.org / TailoredAdmin2026! logs in successfully and unlocks the site.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/auth/login (brute force lockout)",
+        "issue": "Lockout key uses `request.client.host:email`, but behind the K8s ingress `request.client.host` alternates between multiple ingress pod IPs (observed 10.208.128.2 and 10.208.128.6). Failed attempts get split across two identifiers so the 5-fail/15-min lockout never triggers in preview/prod. Effectively no rate-limit on real-world logins. Verified by direct mongo inspection of `login_attempts`.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Nav/UserMenu",
+        "issue": "Both desktop and mobile `UserMenu` are rendered into the DOM at the same time (hidden via Tailwind responsive classes) so `[data-testid='user-menu-trigger']` resolves to 2 elements. Playwright `strict mode` flags this. Suggest using distinct testids: `user-menu-trigger-desktop` and `user-menu-trigger-mobile` (the cart button already uses this pattern: `nav-cart-button` / `nav-cart-button-mobile`). Same for `user-menu-panel` and `user-menu-signout`.",
+        "selector": "[data-testid='user-menu-trigger']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_auth_and_regression.py",
+    "/app/test_reports/pytest/auth_results.xml"
+  ],
+  "action_items": [
+    "Fix brute-force lockout to be ingress-aware: either key the lockout on `email` alone (recommended for password lockouts) or honor `X-Forwarded-For` / `request.headers.get('x-real-ip')` with proper trusted-proxy handling. Current implementation does not actually rate-limit attackers in production.",
+    "Give the desktop and mobile UserMenu their own data-testids (`user-menu-trigger-desktop`/`-mobile`, etc.) to avoid Playwright strict-mode duplicate matches — same pattern that already exists for the cart button."
+  ],
+  "critical_code_review_comments": [
+    "auth.py: brute-force identifier `{ip}:{email}` is broken behind K8s ingress (confirmed two ingress IPs serving requests). Should rate-limit on email or trust X-Forwarded-For. Also consider exponential backoff returned via `Retry-After` header instead of message string.",
+    "auth.py setup_auth: secure=True + samesite='none' is correct for HTTPS preview but will break local HTTP dev. Consider gating via env var (`COOKIE_SECURE`) so localhost dev still works.",
+    "auth.py /auth/refresh: rotates refresh token (good) but the previous refresh token is not denylisted — a stolen refresh token could be used until natural expiry. Acceptable for v1 but worth flagging.",
+    "Nav.jsx / UserMenu.jsx: duplicate `data-testid='user-menu-trigger'` for desktop & mobile causes strict-mode failures (see frontend_issues).",
+    "AuthContext: localStorage fallback `tts:auth:token` was confirmed working alongside httpOnly cookies — good redundancy. Make sure logout clears the localStorage key too (verified visually that avatar disappears after signout)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_auth_and_regression.py",
+    "/app/memory/test_credentials.md",
+    "/app/test_reports/iteration_2.json"
+  ],
+  "success_rate": {"backend": "93% (13/14 passed, 1 xfail real bug)", "frontend": "100%"},
+  "test_credentials": "Admin: gwaltney@tailoredtechsolutions.org / TailoredAdmin2026! (seeded by setup_auth on startup). Documented in /app/memory/test_credentials.md.",
+  "seed_data_creation": "Tests create ephemeral users prefixed `test_` via /api/auth/register. No teardown — they accumulate in the `users` collection but use random UUID-suffixed emails so duplicates are impossible.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests live at /app/backend/tests/test_auth_and_regression.py — runs in ~6s, 13 pass + 1 xfail. Re-run with `cd /app && python -m pytest backend/tests/test_auth_and_regression.py -v`. Frontend selectors verified: auth-gate-overlay, auth-toggle-register, auth-toggle-login, auth-name, auth-email, auth-password, auth-submit, auth-error, user-menu-trigger (NOTE: duplicate desktop+mobile — use `.first`), user-menu-panel, user-menu-signout. To force gate visible: scroll to top 20000. Hero is ~7 viewports tall (snap-scroll). Brute-force lockout is XFAIL because the ingress varies request.client.host across pods — once that's fixed, flip xfail to a normal pass test.",
+  "rca_of_the_issue": "Brute-force lockout broken in K8s preview/prod. RCA: `auth.py:_record_failed_login` and `_check_locked_out` use identifier `f\"{ip}:{email}\"` where ip = `request.client.host`. Behind kubernetes ingress, FastAPI sees the proxy/pod IP as client. We observed two distinct ingress pod IPs (10.208.128.2 and 10.208.128.6) serving sequential requests from the same external client. Failure counts get split between identifiers so neither reaches 5. Reproduction: run `python -m pytest backend/tests/test_auth_and_regression.py::TestBruteForce -v --runxfail` and inspect `db.login_attempts` — you'll see two rows per email each with count<5. Mitigation: change identifier to email-only OR add `from starlette.middleware.trustedhost import TrustedHostMiddleware` + `from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware` and use `request.headers.get('x-forwarded-for', '').split(',')[0].strip()` as the ip when present."
+}

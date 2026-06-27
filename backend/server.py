@@ -15,6 +15,8 @@ from typing import List, Dict, Any, Optional
 import uuid
 from datetime import datetime, timezone
 
+from auth import build_auth_router, setup_auth
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -258,11 +260,14 @@ async def intake_count():
 
 # Include the router in the main app
 app.include_router(api_router)
+app.include_router(build_auth_router(db), prefix="/api")
 
+# CORS with credentials requires explicit origins (no wildcard).
+_cors_origins = [o.strip() for o in os.environ.get('CORS_ORIGINS', '').split(',') if o.strip()]
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=_cors_origins or ["http://localhost:3000"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -273,6 +278,11 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+@app.on_event("startup")
+async def _startup_auth():
+    await setup_auth(db)
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

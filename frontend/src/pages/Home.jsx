@@ -12,23 +12,28 @@ import { Stack } from '../components/tts/Stack';
 import { Testimonials } from '../components/tts/Testimonials';
 import { IntakeSection } from '../components/tts/IntakeSection';
 import { Footer } from '../components/tts/Footer';
+import { AuthGate } from '../components/tts/AuthGate';
 
 export default function Home() {
   return (
     <div>
       <Nav />
+      {/* Hero stays fully visible to everyone. */}
       <SnapScrollHero />
       <Hero />
-      <Marquee />
-      <Services />
-      <Projects />
-      <Founders />
-      <Markets />
-      <Frameworks />
-      <Stack />
-      <Testimonials />
-      <IntakeSection />
-      <Footer />
+      {/* Everything below the Hero is gated behind authentication. */}
+      <AuthGate>
+        <Marquee />
+        <Services />
+        <Projects />
+        <Founders />
+        <Markets />
+        <Frameworks />
+        <Stack />
+        <Testimonials />
+        <IntakeSection />
+        <Footer />
+      </AuthGate>
     </div>
   );
 }
