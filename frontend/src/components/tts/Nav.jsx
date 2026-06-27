@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
+import { useCart } from '../../contexts/CartContext';
 
 // Top-level links. "Projects" contains a submenu with Terra.
 const LINKS = [
@@ -31,6 +32,7 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('');
   const [mobileSub, setMobileSub] = useState('');
+  const { count } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -158,6 +160,30 @@ export function Nav() {
           className="hidden md:inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-[44px] rounded-lg text-[13px] font-semibold tracking-wide transition-all active:scale-[0.98] hover:opacity-90"
           style={{background:'var(--gold-bright)', color:'#09090f'}}>
           Intake Form
+        </Link>
+
+        <Link to="/checkout"
+          data-testid="nav-cart-button"
+          aria-label={`Cart (${count} item${count === 1 ? '' : 's'})`}
+          className="hidden md:inline-flex relative items-center justify-center w-11 h-11 ml-2 rounded-lg transition-all hover:opacity-90 active:scale-[0.98]"
+          style={{background:'rgba(255,255,255,0.04)', border:'1px solid var(--border-subtle)'}}>
+          <ShoppingBag size={18} className="text-chrome" />
+          {count > 0 && (
+            <span data-testid="nav-cart-count" className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 inline-flex items-center justify-center rounded-full text-[10px] font-bold font-mono"
+              style={{background:'var(--gold-bright)', color:'#09090f', boxShadow:'0 0 12px rgba(212,168,67,0.55)'}}>{count}</span>
+          )}
+        </Link>
+
+        <Link to="/checkout"
+          data-testid="nav-cart-button-mobile"
+          aria-label={`Cart (${count} item${count === 1 ? '' : 's'})`}
+          className="md:hidden relative inline-flex items-center justify-center w-11 h-11 rounded-lg mr-1"
+          style={{background:'rgba(255,255,255,0.04)', border:'1px solid var(--border-subtle)'}}>
+          <ShoppingBag size={18} className="text-chrome" />
+          {count > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 inline-flex items-center justify-center rounded-full text-[10px] font-bold font-mono"
+              style={{background:'var(--gold-bright)', color:'#09090f'}}>{count}</span>
+          )}
         </Link>
 
         <button onClick={() => setOpen((v) => !v)} className="md:hidden text-chrome p-2 -mr-2 w-12 h-12 flex items-center justify-center" aria-label="Menu" aria-expanded={open}>

@@ -303,3 +303,25 @@ code { font-family: 'Geist Mono', monospace; }
 @media (min-width: 768px) {
   .terra-phone { transform: rotateY(-10deg) rotateX(4deg); }
 }
+
+/* ===== Service modal pop-in animation ===== */
+@keyframes tts-modal-pop {
+  0%   { opacity: 0; transform: translateY(24px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.tts-modal-pop { animation: tts-modal-pop 320ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (max-width: 639px) {
+  @keyframes tts-modal-pop-mobile {
+    0%   { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .tts-modal-pop { animation: tts-modal-pop-mobile 320ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+
+/* ===== Cart toast slide-up ===== */
+@keyframes tts-toast-in {
+  0%   { opacity: 0; transform: translate(-50%, 20px); }
+  100% { opacity: 1; transform: translate(-50%, 0); }
+}
+.tts-toast-in { animation: tts-toast-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
