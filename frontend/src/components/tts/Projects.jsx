@@ -21,7 +21,7 @@ export function Projects() {
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <div>
               <div className="eyebrow">Selected Work</div>
-              <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">
+              <h2 className="mt-4 font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-chrome">
                 Projects we've <span className="gold-text-gradient">shipped.</span>
               </h2>
             </div>
@@ -33,33 +33,33 @@ export function Projects() {
 
         {/* Flagship: Terra Farming — interactive 7-role dashboard */}
         <Reveal delay={80}>
-          <article id="terra" className="mt-12 sm:mt-14 relative rounded-2xl sm:rounded-3xl overflow-hidden gold-diffuse"
+          <article id="terra" className="mt-10 sm:mt-12 md:mt-14 relative rounded-2xl sm:rounded-3xl overflow-hidden gold-diffuse"
             style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)', background:'linear-gradient(180deg, rgba(20,12,8,0.92) 0%, rgba(13,13,26,0.88) 100%)'}}
           >
             <div className="absolute inset-0 circuit-grid opacity-[0.4] pointer-events-none" />
-            <div className="grid md:grid-cols-[1fr_1.05fr] gap-10 lg:gap-14 items-center p-6 sm:p-10 md:p-14">
-              <div>
+            <div className="grid md:grid-cols-[1fr_1.05fr] gap-8 sm:gap-10 lg:gap-14 items-center p-5 sm:p-8 md:p-14">
+              <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded" style={{color:'#7ac462', background:'rgba(122,196,98,0.10)', border:'1px solid rgba(122,196,98,0.40)'}}>Flagship Product</span>
                   <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded" style={{color:'#7ac462', background:'rgba(122,196,98,0.06)', border:'1px solid rgba(122,196,98,0.30)'}}>Agriculture Intelligence</span>
                 </div>
-                <h3 className="mt-5 font-display text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter">
+                <h3 className="mt-4 sm:mt-5 font-display text-[clamp(2rem,9vw,3rem)] sm:text-5xl md:text-6xl font-extrabold tracking-tight md:tracking-tighter leading-[1.05] break-words">
                   <span className="gold-text-gradient">Terra Farming</span>
                 </h3>
-                <p className="mt-5 text-base sm:text-lg text-chrome-mid max-w-xl leading-relaxed">
+                <p className="mt-4 sm:mt-5 text-base sm:text-lg text-chrome-mid max-w-xl leading-relaxed">
                   The agriculture intelligence platform connecting farmers, buyers, drivers, and HQ — in one unified system.
                 </p>
                 <p className="mt-3 text-sm sm:text-base text-secondary-soft max-w-xl leading-relaxed">
                   A multi-role mobile and web application built for the modern agricultural supply chain. Real-time logistics, inventory management, and direct market connections — all running on a dark, precision-engineered dashboard interface.
                 </p>
 
-                <ul className="mt-8 grid sm:grid-cols-2 gap-4">
+                <ul className="mt-7 sm:mt-8 grid sm:grid-cols-2 gap-3.5 sm:gap-4">
                   {TERRA_FEATURES.map((f) => (
-                    <li key={f.t} className="flex items-start gap-3">
+                    <li key={f.t} className="flex items-start gap-3 min-w-0">
                       <span className="shrink-0 w-9 h-9 rounded-md flex items-center justify-center" style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)', background:'var(--gold-glow)'}}>
                         <f.Icon size={16} className="text-gold" />
                       </span>
-                      <div>
+                      <div className="min-w-0">
                         <div className="text-chrome font-medium leading-tight">{f.t}</div>
                         <div className="text-xs sm:text-sm text-muted-soft mt-0.5">{f.s}</div>
                       </div>
@@ -67,15 +67,15 @@ export function Projects() {
                   ))}
                 </ul>
 
-                <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
                   <a href="https://terrafarming.io" target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[52px] rounded-xl font-semibold transition-all active:scale-[0.98] hover:opacity-90"
+                    className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 min-h-[52px] rounded-xl font-semibold transition-all active:scale-[0.98] hover:opacity-90"
                     style={{background:'var(--gold-bright)', color:'#09090f'}}
                   >
                     Visit terrafarming.io <ArrowRight size={16} />
                   </a>
                   <a href="#contact"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[52px] rounded-xl text-gold font-semibold transition-all active:scale-[0.98]"
+                    className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 min-h-[52px] rounded-xl text-gold font-semibold transition-all active:scale-[0.98]"
                     style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}
                   >
                     Discuss a similar build
@@ -83,12 +83,13 @@ export function Projects() {
                 </div>
 
                 <p className="mt-4 text-[11px] font-mono uppercase tracking-widest text-gold-dim">
-                  Tap a role on the right to explore the live dashboard.
+                  <span className="md:hidden">Swipe the role pills below to explore the live dashboard.</span>
+                  <span className="hidden md:inline">Tap a role on the right to explore the live dashboard.</span>
                 </p>
               </div>
 
               {/* Interactive 7-role dashboard */}
-              <div className="md:pl-2">
+              <div className="md:pl-2 min-w-0">
                 <TerraDashboard />
               </div>
             </div>

@@ -255,11 +255,11 @@ export function TerraDashboard() {
   const View = VIEWS[active];
 
   return (
-    <div className="flex flex-col items-center gap-6 md:gap-8 md:flex-row md:items-stretch md:gap-10">
-      {/* Tab rail: vertical on desktop, horizontal scroll on mobile */}
+    <div className="flex flex-col items-stretch gap-5 md:gap-8 md:flex-row md:items-stretch md:gap-10">
+      {/* Tab rail: horizontal scroll on mobile (above phone), vertical column on desktop (left of phone) */}
       <nav
         aria-label="Terra role view"
-        className="order-2 md:order-1 w-full md:w-44 flex md:flex-col gap-2 overflow-x-auto md:overflow-visible scrollbar-hidden md:py-2 -mx-2 md:mx-0 px-2 md:px-0"
+        className="w-full md:w-48 flex md:flex-col gap-2 overflow-x-auto md:overflow-visible scrollbar-hidden snap-x snap-mandatory md:snap-none -mx-1 md:mx-0 px-1 md:px-0 pb-1 md:pb-0"
       >
         {TABS.map(({ id, label, Icon }) => {
           const isActive = active === id;
@@ -269,7 +269,7 @@ export function TerraDashboard() {
               type="button"
               onClick={() => setActive(id)}
               aria-pressed={isActive}
-              className="shrink-0 flex items-center gap-2.5 rounded-xl px-3.5 py-3 min-h-[48px] text-left transition-all active:scale-[0.98]"
+              className="snap-start shrink-0 flex items-center gap-2.5 rounded-xl px-3.5 py-3 min-h-[48px] text-left transition-all active:scale-[0.98]"
               style={{
                 borderWidth: '1px',
                 borderStyle: 'solid',
@@ -287,23 +287,23 @@ export function TerraDashboard() {
                 }}>
                 <Icon size={13} />
               </span>
-              <span className="text-[12px] font-medium tracking-wide whitespace-nowrap md:whitespace-normal">{label}</span>
+              <span className="text-[12px] font-medium tracking-wide whitespace-nowrap">{label}</span>
             </button>
           );
         })}
       </nav>
 
       {/* Phone mockup with switching content */}
-      <div className="order-1 md:order-2 flex-1 flex justify-center md:justify-start" style={{ perspective: '1200px' }}>
+      <div className="flex-1 flex justify-center md:justify-start" style={{ perspective: '1200px' }}>
         <div
-          className="relative w-[260px] sm:w-[280px] h-[520px] sm:h-[560px] rounded-[40px] sm:rounded-[44px] p-3 shadow-[0_40px_80px_-20px_rgba(101,67,33,0.55)]"
-          style={{ transform: 'rotateY(-10deg) rotateX(4deg)', borderWidth: '2px', borderStyle: 'solid', borderColor: '#8b5a2b' }}
+          className="terra-phone relative w-[240px] sm:w-[268px] md:w-[280px] h-[480px] sm:h-[536px] md:h-[560px] rounded-[40px] md:rounded-[44px] p-3 shadow-[0_30px_70px_-20px_rgba(101,67,33,0.50)]"
+          style={{ borderWidth: '2px', borderStyle: 'solid', borderColor: '#8b5a2b' }}
         >
-          <div className="absolute inset-0 rounded-[40px] sm:rounded-[44px]" style={{ background: 'linear-gradient(160deg,#3b2410 0%,#1a0f06 60%,#0a0805 100%)' }} />
+          <div className="absolute inset-0 rounded-[40px] md:rounded-[44px]" style={{ background: 'linear-gradient(160deg,#3b2410 0%,#1a0f06 60%,#0a0805 100%)' }} />
           <div className="absolute left-1/2 -translate-x-1/2 top-3 w-24 h-5 rounded-full bg-black/70 z-10" />
-          <div className="relative w-full h-full rounded-[30px] sm:rounded-[34px] overflow-hidden bg-gradient-to-b from-[#2a1a0c] via-[#1a1208] to-[#0a0805] p-4 sm:p-5">
+          <div className="relative w-full h-full rounded-[30px] md:rounded-[34px] overflow-hidden bg-gradient-to-b from-[#2a1a0c] via-[#1a1208] to-[#0a0805] p-4 sm:p-5">
             <div className="flex justify-center mb-3">
-              <img src="/logos/terra-logo.png" alt="Terra Farming logo" className="h-14 sm:h-16 w-14 sm:w-16 rounded-2xl object-contain drop-shadow-[0_4px_18px_rgba(122,196,98,0.35)]" />
+              <img src="/logos/terra-logo.png" alt="Terra Farming logo" className="h-12 sm:h-14 md:h-16 w-12 sm:w-14 md:w-16 rounded-2xl object-contain drop-shadow-[0_4px_18px_rgba(122,196,98,0.35)]" />
             </div>
             {/* Animated view container — fade between tabs */}
             <div key={active} className="terra-fade-in">
