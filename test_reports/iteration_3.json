@@ -1,0 +1,33 @@
+{
+  "summary": "Retest of the 2 issues from iteration_2 — BOTH FIXED. Backend brute-force lockout now works end-to-end: identifier changed to `email:{email}` so K8s ingress pod IP rotation no longer splits the counter. Attempts 1-5 return 401, the 6th returns 429 with detail starting with 'Too many failed attempts'. A successful login before 5 fails clears the counter (verified). The previously xfail test has been flipped to a regular pass test and an additional `test_successful_login_clears_counter` test was added. Frontend: UserMenu now accepts a `variant` prop and Nav.jsx renders <UserMenu variant='desktop'/> + <UserMenu variant='mobile'/> with suffixed testids. On 1280x900 desktop, `[data-testid='user-menu-trigger-desktop']` exists exactly once and opens `[data-testid='user-menu-panel-desktop']` containing `[data-testid='user-menu-signout-desktop']`. On 390x800 mobile, the `-mobile` variants exist exactly once and open the mobile panel/signout. No Playwright strict-mode duplicate-element errors. Legacy `user-menu-trigger` testid is fully gone (count=0). All regression checks (/api/auth/me, register, logout, /api/intake, /api/intake/count, /api/status) still pass. 15/15 backend tests pass in ~9.7s.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_auth_and_regression.py",
+    "/app/test_reports/pytest/auth_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "auth.py /auth/refresh: rotated refresh tokens are still not denylisted; a stolen refresh token remains valid until natural 7-day expiry. Acceptable for v1 but worth tracking.",
+    "auth.py _set_auth_cookies: hardcodes secure=True+samesite='none'. Fine for HTTPS preview/prod but will break local HTTP dev — consider an env-gated COOKIE_SECURE toggle.",
+    "auth.py login lockout is now email-only — note this opens a (minor) DoS vector where an attacker can intentionally lock a victim's account by sending 5 bad attempts. Mitigation options: combine with hashed X-Forwarded-For when the header is trusted, or expose a 'send reset link' path that bypasses the counter."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_auth_and_regression.py",
+    "/app/test_reports/iteration_3.json"
+  ],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100%"},
+  "test_credentials": "Admin: gwaltney@tailoredtechsolutions.org / TailoredAdmin2026! (verified login still works, role=admin).",
+  "seed_data_creation": "Ephemeral users created via /api/auth/register with UUID-suffixed `test_*@example.com` emails. No teardown; emails are unique.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend suite at /app/backend/tests/test_auth_and_regression.py runs in ~10s with 15 passing tests (no xfails left). The brute-force test now expects 401 for attempts 1-5 and 429 on the 6th. Frontend testids for the user menu are now `-desktop` / `-mobile` suffixed; legacy `user-menu-trigger` (no suffix) was confirmed removed from the DOM. To reproduce frontend test: viewport 1280x900, register via gate, assert exactly 1 `[data-testid='user-menu-trigger-desktop']`; then resize to 390x800 and reload — exactly 1 `[data-testid='user-menu-trigger-mobile']`.",
+  "rca_of_the_issue": "Both bugs from iteration_2 resolved. (1) Brute-force RCA was K8s ingress pod IP rotation splitting the {ip}:{email} key — fix changed identifier to `email:{email}` in /app/backend/auth.py login(). Confirmed end-to-end via real preview HTTPS endpoint: 5x 401 then 429 with correct detail prefix. (2) Duplicate testid RCA was that both desktop+mobile <UserMenu/> render simultaneously (Tailwind responsive hide/show) so testids collided — fix added a `variant` prop that suffixes all testids with `-desktop` or `-mobile`. Confirmed each testid resolves to exactly 1 node on its respective viewport."
+}

@@ -177,7 +177,7 @@ export function Nav() {
           )}
         </Link>
 
-        {isAuthed && <div className="hidden md:block ml-2"><UserMenu /></div>}
+        {isAuthed && <div className="hidden md:block ml-2"><UserMenu variant="desktop" /></div>}
 
         <Link to="/checkout"
           data-testid="nav-cart-button-mobile"
@@ -191,7 +191,7 @@ export function Nav() {
           )}
         </Link>
 
-        {isAuthed && <div className="md:hidden mr-1"><UserMenu /></div>}
+        {isAuthed && <div className="md:hidden mr-1"><UserMenu variant="mobile" /></div>}
 
         <button onClick={() => setOpen((v) => !v)} className="md:hidden text-chrome p-2 -mr-2 w-12 h-12 flex items-center justify-center" aria-label="Menu" aria-expanded={open}>
           {open ? <X size={22} /> : <Menu size={22} />}

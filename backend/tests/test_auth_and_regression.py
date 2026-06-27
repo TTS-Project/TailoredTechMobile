@@ -148,25 +148,43 @@ class TestMeAndLogout:
 
 # ---------- Brute force ----------
 class TestBruteForce:
-    @pytest.mark.xfail(
-        reason="Backend bug: _record_failed_login keys on `{request.client.host}:{email}`, "
-               "but in K8s ingress request.client.host alternates between multiple ingress pod IPs "
-               "(e.g. 10.208.128.2 / 10.208.128.6). Failed attempts get spread across identifiers "
-               "and never reach the 5-fail threshold. Fix: key on email alone OR honor X-Forwarded-For.",
-        strict=False,
-    )
     def test_lockout_after_5_failures(self, session):
         email = _rand_email("test_brute")
         session.post(f"{API}/auth/register",
                      json={"email": email, "password": "Password123!", "name": "Brute"})
-        last_status = None
-        for _ in range(8):  # extra attempts to give it the best chance
+        # First 5 wrong-password attempts should return 401.
+        statuses = []
+        for i in range(5):
             r = session.post(f"{API}/auth/login",
                              json={"email": email, "password": "wrongpass"})
-            last_status = r.status_code
-            if last_status == 429:
-                break
-        assert last_status == 429, f"Expected 429 lockout, got {last_status}"
+            statuses.append(r.status_code)
+        assert all(s == 401 for s in statuses), f"Expected first 5 to be 401, got {statuses}"
+        # 6th attempt MUST be 429 with the documented detail prefix.
+        r6 = session.post(f"{API}/auth/login",
+                          json={"email": email, "password": "wrongpass"})
+        assert r6.status_code == 429, f"Expected 429 on 6th attempt, got {r6.status_code}: {r6.text}"
+        detail = r6.json().get("detail", "")
+        assert detail.startswith("Too many failed attempts"), f"Unexpected detail: {detail}"
+
+    def test_successful_login_clears_counter(self, session):
+        """A successful login before 5 fails must reset the counter so subsequent fails don't lock out immediately."""
+        email = _rand_email("test_brute_clear")
+        session.post(f"{API}/auth/register",
+                     json={"email": email, "password": "Password123!", "name": "Brute Clear"})
+        # 3 wrong attempts
+        for _ in range(3):
+            r = session.post(f"{API}/auth/login",
+                             json={"email": email, "password": "wrongpass"})
+            assert r.status_code == 401
+        # Correct login clears counter
+        ok = session.post(f"{API}/auth/login",
+                          json={"email": email, "password": "Password123!"})
+        assert ok.status_code == 200
+        # Now 3 more wrong attempts should still be 401 (not 429) because counter was cleared
+        for _ in range(3):
+            r = session.post(f"{API}/auth/login",
+                             json={"email": email, "password": "wrongpass"})
+            assert r.status_code == 401, f"Counter not cleared after successful login: {r.status_code}"
 
 
 # ---------- Regression: existing endpoints still work ----------

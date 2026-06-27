@@ -207,8 +207,10 @@ def build_auth_router(db) -> APIRouter:
     @router.post("/login")
     async def login(payload: LoginPayload, request: Request, response: Response):
         email = payload.email.lower().strip()
-        ip = (request.client.host if request.client else "unknown") or "unknown"
-        identifier = f"{ip}:{email}"
+        # Key lockout on email alone — `request.client.host` returns the ingress pod IP
+        # in K8s (multiple pods rotate), splitting the counter and defeating the lockout.
+        identifier = f"email:{email}"
+        _ = request  # kept for future per-IP enhancements
 
         remaining = await _check_locked_out(db, identifier)
         if remaining is not None:

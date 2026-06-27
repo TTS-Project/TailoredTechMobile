@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { LogOut, User2, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
-export function UserMenu() {
+export function UserMenu({ variant = 'desktop' }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const suffix = variant === 'mobile' ? '-mobile' : '-desktop';
 
   useEffect(() => {
     if (!open) return undefined;
@@ -26,7 +27,7 @@ export function UserMenu() {
     <div className="relative" ref={ref}>
       <button
         type="button"
-        data-testid="user-menu-trigger"
+        data-testid={`user-menu-trigger${suffix}`}
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
@@ -46,7 +47,7 @@ export function UserMenu() {
       {open && (
         <div
           role="menu"
-          data-testid="user-menu-panel"
+          data-testid={`user-menu-panel${suffix}`}
           className="absolute right-0 top-full mt-2 min-w-[240px] rounded-xl py-1.5 z-50 tts-modal-pop"
           style={{
             background: 'rgba(13,13,26,0.96)',
@@ -65,7 +66,7 @@ export function UserMenu() {
             <MenuItem
               icon={LogOut}
               label="Sign out"
-              testid="user-menu-signout"
+              testid={`user-menu-signout${suffix}`}
               onClick={async () => { setOpen(false); await logout(); }}
             />
           </div>
