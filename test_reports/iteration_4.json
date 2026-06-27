@@ -1,0 +1,32 @@
+{
+  "summary": "PayPal SANDBOX checkout integration verified end-to-end. Backend: 13/13 PayPal tests pass + 15/15 auth/intake regression tests pass (total 28/28 in ~16s). Frontend: empty-cart shows EmptyState; seeding tts:cart:v1 with ai-chatbot renders [data-testid=checkout-deposit-amount]=$472.48 and [data-testid=checkout-signin-prompt] when unauthed. After logging in via /api/auth/login (admin gwaltney@…) and reloading /checkout, the sign-in prompt disappears and the PayPal Smart Buttons iframe (title='PayPal', src on https://www.sandbox.paypal.com/smart/buttons) is mounted inside [data-testid=checkout-paypal-container]. /intake?paid=true&order=abc123 shows the green 'Payment Received' banner [data-testid=intake-payment-success] (rendered Order #ABC123); /intake with no query does NOT render the banner. No PayPal capture was attempted (per agent_to_agent_context_note — no sandbox buyer account). Capture endpoint behavior on un-approved order was verified to 502 as designed.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": { "ui_bugs": [], "integration_issues": [], "design_issues": [] },
+  "test_report_links": [
+    "/app/backend/tests/test_paypal_checkout.py",
+    "/app/backend/tests/test_auth_and_regression.py",
+    "/app/test_reports/pytest/paypal_results.xml",
+    "/app/test_reports/pytest/auth_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "paypal_checkout.py: `_compute_amounts` uses float arithmetic (e.g. 1839.95 * 0.5 = 919.975). Python rounding is correct here (banker’s nearest .98) so today works, but if catalog ever produces a .x25/.x75 deposit float you'll hit half-even surprises. Consider switching to Decimal(quantize) for the money path before going live.",
+    "paypal_checkout.py: CATALOG_PRICES is duplicated from frontend/src/data/services.js with a comment that they MUST stay in sync — there's no test that asserts equality, so prices can drift silently. Add a CI check that parses services.js and asserts each id+price matches.",
+    "paypal_checkout.py: `pydantic.BaseModel` for CartLine accepts extra fields by default (verified: client `price: 0.01` is ignored — good for the test, but means typos like `quantity` instead of `qty` would silently default qty to required, raising 422 — fine). For defense-in-depth add `model_config = ConfigDict(extra='forbid')` so unexpected fields are explicitly rejected.",
+    "paypal_checkout.py: `create-order` uses PayPal-Request-Id = internal_id. Good idempotency anchor BUT the row is only persisted AFTER PayPal responds 200 — if the network drops between PayPal 201 and our `db.orders.insert_one`, we leak a PayPal order with no DB row. Move the insert to happen first with status='creating', then update with paypal_order_id on success.",
+    "Checkout.jsx: clears the cart via clearCart() immediately on onApprove → if the /capture-order call fails (5xx), the user has lost their cart AND the order is in an unknown state on PayPal's side. Defer clearCart() until capture-order returns 2xx.",
+    "Checkout.jsx: surfaces server `detail` strings verbatim in the error toast. PayPal/server error messages can leak details — fine for now, but consider mapping to friendly copy before launch.",
+    "backend/.env contains live-looking SMTP_PASSWORD + PayPal sandbox secret in plaintext. Standard for preview but confirm these are rotated before prod."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_paypal_checkout.py",
+    "/app/test_reports/iteration_4.json"
+  ],
+  "success_rate": { "backend": "100% (13/13 paypal, 15/15 regression)", "frontend": "100% (all 4 flows)" },
+  "test_credentials": "Admin gwaltney@tailoredtechsolutions.org / TailoredAdmin2026! still valid; role=admin.",
+  "seed_data_creation": "Created ~6 fresh test users (test_pp_*@example.com) via /api/auth/register and ~7 pending orders in db.orders (status='pending', never captured). Safe to leave — they hold no PII and `paypal_order_id` is unique-indexed. No teardown.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests live at /app/backend/tests/test_paypal_checkout.py (13 tests) and /app/backend/tests/test_auth_and_regression.py (15 tests). Run together: `pytest /app/backend/tests/ -v`. PayPal is in SANDBOX (PAYPAL_API_BASE=https://api-m.sandbox.paypal.com). NEVER click the actual PayPal buttons from a bot — there is no sandbox buyer account configured; tests stop at iframe-render verification. To reproduce the authed PayPal UI: POST /api/auth/login → store access_token in localStorage key `tts:auth:token`, seed `tts:cart:v1` with [{id:'ai-chatbot',name:'AI Chatbot',kind:'AI',emoji:'🤖',price:895,qty:1}], reload /checkout, wait ~8s for the PayPal SDK to mount the iframe titled 'PayPal'. The CartContext storage key is `tts:cart:v1` (NOT `tts:cart`).",
+  "rca_of_the_issue": "N/A — feature verification only; no bugs found. All 4 requested frontend flows + 9 requested backend flows behave as specified. Math: subtotal+CONSULTATION_FEE=944.95, deposit=472.48; for multi-item 1790+49.95=1839.95, deposit=919.98 — both confirmed."
+}

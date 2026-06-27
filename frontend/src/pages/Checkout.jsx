@@ -1,14 +1,29 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, Info } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ShoppingBag, Trash2, Plus, Minus, ShieldCheck, Info, Lock } from 'lucide-react';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { Nav } from '../components/tts/Nav';
 import { Footer } from '../components/tts/Footer';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import { CONSULTATION, formatPrice } from '../data/services';
 
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID;
+const TOKEN_KEY = 'tts:auth:token';
+
+function authHeaders() {
+  const t = localStorage.getItem(TOKEN_KEY);
+  return t ? { Authorization: `Bearer ${t}` } : {};
+}
+
 export default function CheckoutPage() {
-  const { items, removeItem, updateQty, subtotal, consultationFee, total, deposit, balance } = useCart();
-  useEffect(() => { window.scrollTo({top:0}); }, []);
+  const { items, removeItem, updateQty, subtotal, consultationFee, total, deposit, balance, clearCart } = useCart();
+  const { isAuthed, isChecking } = useAuth();
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+
+  useEffect(() => { window.scrollTo({ top: 0 }); }, []);
 
   return (
     <div className="min-h-screen">
@@ -60,17 +75,73 @@ export default function CheckoutPage() {
                   <div className="h-px" style={{background:'var(--border-subtle)'}} />
                   <Row label={<span className="text-chrome font-semibold">Total Project Value</span>} value={<span className="text-chrome font-bold text-lg">{formatPrice(total)}</span>} />
                   <div className="h-px" style={{background:'var(--border-subtle)'}} />
-                  <Row label={<span className="text-gold">Required Deposit (50%)</span>} value={<span className="text-gold font-bold text-xl">{formatPrice(deposit)}</span>} />
+                  <Row label={<span className="text-gold">Required Deposit (50%)</span>} value={<span className="text-gold font-bold text-xl" data-testid="checkout-deposit-amount">{formatPrice(deposit)}</span>} />
                   <Row label="Remaining Balance" value={formatPrice(balance)} />
                 </dl>
                 <div className="mt-5 rounded-xl p-3 flex items-start gap-2 text-[11px] text-chrome-mid" style={{background:'rgba(255,255,255,0.02)', border:'1px solid var(--border-subtle)'}}>
                   <Info size={12} className="text-gold-dim shrink-0 mt-0.5" />
                   <span>A 50% down payment is required before work begins. The remaining balance is due upon completion and prior to final delivery.</span>
                 </div>
-                <button type="button" data-testid="checkout-paypal-button" className="mt-5 w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[52px] rounded-xl font-semibold transition-all active:scale-[0.98] hover:opacity-90" style={{background:'#003087', color:'#fff'}}>
-                  Proceed to PayPal
-                </button>
-                <p className="mt-3 text-[10px] font-mono uppercase tracking-widest text-chrome-mid text-center">PayPal integration coming soon</p>
+
+                {error && (
+                  <div data-testid="checkout-error" className="mt-4 rounded-lg p-2.5 text-[12px] leading-relaxed" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.35)', color: '#fca5a5' }}>{error}</div>
+                )}
+
+                <div className="mt-5" data-testid="checkout-paypal-container">
+                  {!isChecking && !isAuthed && (
+                    <Link to="/" data-testid="checkout-signin-prompt" className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 min-h-[52px] rounded-xl font-semibold transition-all" style={{ background:'var(--gold-bright)', color:'#09090f' }}>
+                      <Lock size={14} /> Sign in to pay
+                    </Link>
+                  )}
+                  {isAuthed && PAYPAL_CLIENT_ID && (
+                    <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: 'USD', intent: 'capture' }}>
+                      <PayPalButtons
+                        style={{ layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay', tagline: false, height: 48 }}
+                        createOrder={async () => {
+                          setError('');
+                          const r = await fetch(`${API}/checkout/create-order`, {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                            body: JSON.stringify({ items: items.map((it) => ({ id: it.id, qty: it.qty })) }),
+                          });
+                          const data = await r.json().catch(() => ({}));
+                          if (!r.ok) {
+                            const msg = typeof data?.detail === 'string' ? data.detail : 'Could not start PayPal checkout.';
+                            setError(msg);
+                            throw new Error(msg);
+                          }
+                          window.sessionStorage.setItem('tts:lastOrderId', data.order_id);
+                          return data.orderID;
+                        }}
+                        onApprove={async (data) => {
+                          const r = await fetch(`${API}/checkout/capture-order/${data.orderID}`, {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: { ...authHeaders() },
+                          });
+                          const json = await r.json().catch(() => ({}));
+                          if (!r.ok) {
+                            const msg = typeof json?.detail === 'string' ? json.detail : 'Payment captured but could not be confirmed.';
+                            setError(msg);
+                            throw new Error(msg);
+                          }
+                          clearCart();
+                          navigate(`/intake?paid=true&order=${encodeURIComponent(json.order_id)}`);
+                        }}
+                        onError={(err) => {
+                          console.error('PayPal error', err);
+                          setError('PayPal checkout failed. Please try again.');
+                        }}
+                        onCancel={() => setError('Checkout cancelled. Your cart is still saved.')}
+                      />
+                    </PayPalScriptProvider>
+                  )}
+                  {isAuthed && !PAYPAL_CLIENT_ID && (
+                    <div className="text-[12px] text-chrome-mid">PayPal is not configured on this preview.</div>
+                  )}
+                </div>
+                <p className="mt-3 text-[10px] font-mono uppercase tracking-widest text-chrome-mid text-center">Secure checkout via PayPal</p>
               </aside>
             </div>
           )}
