@@ -290,3 +290,10 @@ code { font-family: 'Geist Mono', monospace; }
   cursor: pointer;
 }
 .tts-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(212,168,67,0.45), 0 0 14px rgba(212,168,67,0.55); }
+
+/* ===== Terra dashboard view transition ===== */
+@keyframes terra-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.terra-fade-in { animation: terra-fade-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both; }
