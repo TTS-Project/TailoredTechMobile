@@ -4,7 +4,7 @@ import { Hero3D } from './Hero3D';
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden min-h-[100dvh] pt-28 sm:pt-32 pb-16 sm:pb-20 bg-grad-hero">
+    <section id="top" className="relative overflow-hidden min-h-[100dvh] pt-32 sm:pt-36 pb-16 sm:pb-20 bg-grad-hero">
       <div className="absolute inset-0 circuit-grid opacity-[0.5] pointer-events-none" />
       <div className="absolute -top-40 -left-40 w-[680px] h-[680px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,168,67,0.18), transparent 60%)', filter: 'blur(48px)' }} />
       <div className="absolute -bottom-40 right-0 w-[680px] h-[680px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(136,85,255,0.22), transparent 60%)', filter: 'blur(48px)' }} />

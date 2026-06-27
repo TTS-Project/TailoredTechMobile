@@ -198,6 +198,52 @@ code { font-family: 'Geist Mono', monospace; }
 
 @layer base { * { border-color: var(--border-subtle); } }
 
+/* ===== Animated logo ===== */
+@keyframes tts-logo-glow-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.85; }
+}
+@keyframes tts-spark-pop {
+  0%   { transform: scale(0); opacity: 0; }
+  35%  { transform: scale(1); opacity: 1; }
+  70%  { transform: scale(0.4); opacity: 0.5; }
+  100% { transform: scale(0); opacity: 0; }
+}
+@keyframes tts-tech-flicker {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  50%      { text-shadow: 0 0 14px rgba(212,168,67,0.55), 0 0 4px rgba(212,168,67,0.85); }
+}
+.tts-logo-badge::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 30% 30%, rgba(212,168,67,0.55), transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+  animation: tts-logo-glow-pulse 3.2s ease-in-out infinite;
+}
+.tts-logo-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 70% 80%, rgba(136,85,255,0.35), transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: tts-logo-glow-pulse 4.6s ease-in-out infinite;
+}
+.tts-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7d6 0%, #d4a843 45%, transparent 70%);
+  box-shadow: 0 0 6px rgba(255,235,170,0.9);
+  animation: tts-spark-pop 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.tts-logo-tech { animation: tts-tech-flicker 4s ease-in-out infinite; }
+
 .scrollbar-hidden { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hidden::-webkit-scrollbar { display: none; }
 
