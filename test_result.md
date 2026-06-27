@@ -102,7 +102,20 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the Tailored Tech Solutions website - verify mobile responsiveness on home page (/) at multiple viewports and interactive projects dashboard (/projects) functionality"
+user_problem_statement: "Test the Tailored Tech Solutions website - verify mobile responsiveness on home page (/) at multiple viewports and interactive projects dashboard (/projects) functionality. Test the new AI Readiness Diagnostic intake endpoint on the backend."
+
+backend:
+  - task: "AI Readiness Diagnostic Intake Endpoint - POST /api/intake"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "All 8 test scenarios passed successfully: (1) POST complete valid payload with all 21 answers returns HTTP 200 with correct response structure {ok:true, id:<uuid>, stored:true, emailed:false}. (2) POST with invalid email 'not-an-email' returns HTTP 422 validation error as expected. (3) POST with missing contact.name returns HTTP 422 validation error as expected. (4) POST with empty answers object succeeds with HTTP 200 and stored:true. (5) GET /api/intake/count returns correct count after successful POSTs. (6) MongoDB persistence verified - count increases by exactly 1 after each successful POST. (7) CORS headers present and correct (Access-Control-Allow-Origin: *, Access-Control-Allow-Methods includes POST). (8) No regression - existing endpoints /api/, GET /api/status, POST /api/status all still working correctly. Email functionality returns emailed:false as expected (SMTP not configured). All 13 test assertions passed."
 
 frontend:
   - task: "Mobile Responsiveness - No horizontal overflow"
@@ -371,17 +384,19 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
+  version: "1.1"
+  test_sequence: 2
   run_ui: true
-  last_tested: "2025-06-27"
+  last_tested: "2026-06-27"
 
 test_plan:
   current_focus: []
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
   - agent: "testing"
     message: "Comprehensive testing completed for both mobile responsiveness (home page) and projects dashboard. All critical functionality is working correctly. Minor issue with some decorative touch targets being below 44x44px, but all primary interactive elements meet accessibility requirements. The website is production-ready."
+  - agent: "testing"
+    message: "AI Readiness Diagnostic intake endpoint testing completed. All 8 test scenarios passed (13 total assertions). Endpoint correctly handles valid submissions, validates email format and required fields, accepts empty answers, persists to MongoDB, returns proper CORS headers, and does not break existing endpoints. Email functionality returns emailed:false as expected since SMTP is not configured. Backend API is fully functional and ready for production use."

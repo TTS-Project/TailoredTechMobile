@@ -2,40 +2,37 @@ import React from 'react';
 
 /**
  * Animated brand logo:
- *  - Uses the real Tailored Tech circuit-suit mark as the badge
- *  - Pulsing aura glow (shade in/out) extending beyond the badge
- *  - Sparks pulsing at corners (inside the badge frame)
- *  - Wordmark: "Tailored" white · "Tech" gold · "Solutions" white
+ *  - Real Tailored Tech circuit-suit shield (background removed -> PNG)
+ *  - Pulsing aura glow (cyan / violet / red) that shades in & out
+ *  - Sparks twinkling around the mark
+ *  - Wordmark: "Tailored" white · "Tech" red · "Solutions" white
  */
-export function Logo({ size = 48, showWordmark = true }) {
+export function Logo({ size = 52, showWordmark = true, fontSize }) {
   return (
     <div className="flex items-center gap-3 select-none">
-      {/* Outer wrapper hosts the aura (no clipping) */}
+      {/* Outer wrapper hosts the aura — no clipping */}
       <div className="relative shrink-0 tts-logo-badge" style={{ width: size, height: size }} aria-hidden="true">
-        {/* Pulsing aura glow — sits behind, can extend outside */}
+        {/* Pulsing aura behind the mark */}
         <span className="tts-logo-aura" />
-        {/* Inner crop frame holds the real brand image and sparks */}
-        <div className="relative w-full h-full overflow-hidden rounded-xl">
-          <img
-            src="/logos/tts-brand.jpeg"
-            alt="Tailored Tech Solutions logo"
-            className="w-full h-full object-cover"
-            style={{ objectPosition: '50% 18%', transform: 'scale(2.05)', transformOrigin: '50% 30%' }}
-          />
-          {/* Soft inner highlight + frame */}
-          <span className="absolute inset-0 rounded-xl pointer-events-none" style={{
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(212,168,67,0.32)',
-          }} />
-          {/* Sparks (clipped to badge) */}
-          <span className="tts-spark" style={{ top: '8%',  left: '8%' }} />
-          <span className="tts-spark" style={{ top: '8%',  right: '8%',  animationDelay: '0.7s' }} />
-          <span className="tts-spark" style={{ bottom: '8%', left: '12%', animationDelay: '1.4s' }} />
-          <span className="tts-spark" style={{ bottom: '8%', right: '8%', animationDelay: '2.1s' }} />
-        </div>
+        {/* The actual brand mark — already transparent PNG */}
+        <img
+          src="/logos/tts-shield.png"
+          alt="Tailored Tech Solutions logo"
+          className="relative w-full h-full object-contain tts-logo-img"
+          draggable={false}
+        />
+        {/* Sparks (positioned around the badge) */}
+        <span className="tts-spark" style={{ top: '4%',  left: '4%' }} />
+        <span className="tts-spark" style={{ top: '4%',  right: '4%',  animationDelay: '0.7s' }} />
+        <span className="tts-spark" style={{ bottom: '4%', left: '8%',  animationDelay: '1.4s' }} />
+        <span className="tts-spark" style={{ bottom: '4%', right: '4%', animationDelay: '2.1s' }} />
       </div>
 
       {showWordmark && (
-        <span className="font-display tracking-tight leading-none flex items-baseline gap-[0.18em]" style={{ fontSize: 'clamp(15px, 1.7vw, 19px)' }}>
+        <span
+          className="font-display tracking-tight leading-none flex items-baseline gap-[0.18em]"
+          style={{ fontSize: fontSize || 'clamp(15px, 1.7vw, 19px)' }}
+        >
           <span style={{ color: 'var(--chrome-light)', fontWeight: 800 }}>Tailored</span>
           <span className="tts-logo-tech" style={{ color: 'var(--gold-bright)', fontWeight: 800 }}>Tech</span>
           <span style={{ color: 'var(--chrome-light)', fontWeight: 800 }}>Solutions</span>

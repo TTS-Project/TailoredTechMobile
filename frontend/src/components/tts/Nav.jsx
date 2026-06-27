@@ -154,11 +154,11 @@ export function Nav() {
           })}
         </nav>
 
-        <a href="#contact" onClick={(e) => onLinkClick(e, '#contact')}
-          className="hidden md:inline-flex items-center justify-center px-5 py-2.5 min-h-[44px] rounded-lg text-gold text-[13px] font-semibold tracking-wide hover:bg-[var(--gold-glow)] transition-all"
-          style={{borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}>
-          Get Started
-        </a>
+        <Link to="/intake"
+          className="hidden md:inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-[44px] rounded-lg text-[13px] font-semibold tracking-wide transition-all active:scale-[0.98] hover:opacity-90"
+          style={{background:'var(--gold-bright)', color:'#09090f'}}>
+          Intake Form
+        </Link>
 
         <button onClick={() => setOpen((v) => !v)} className="md:hidden text-chrome p-2 -mr-2 w-12 h-12 flex items-center justify-center" aria-label="Menu" aria-expanded={open}>
           {open ? <X size={22} /> : <Menu size={22} />}
@@ -213,11 +213,11 @@ export function Nav() {
               </a>
             );
           })}
-          <a href="#contact" onClick={(e) => onLinkClick(e, '#contact')}
+          <Link to="/intake" onClick={() => setOpen(false)}
             className="mt-8 inline-flex items-center justify-center px-6 py-4 min-h-[56px] rounded-xl font-bold"
             style={{background:'var(--gold-bright)', color:'#09090f'}}>
-            Get Started
-          </a>
+            Intake Form
+          </Link>
         </nav>
       </div>
     </header>

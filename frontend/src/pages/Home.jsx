@@ -10,7 +10,7 @@ import { Markets } from '../components/tts/Markets';
 import { Frameworks } from '../components/tts/Frameworks';
 import { Stack } from '../components/tts/Stack';
 import { Testimonials } from '../components/tts/Testimonials';
-import { Contact } from '../components/tts/Contact';
+import { IntakeSection } from '../components/tts/IntakeSection';
 import { Footer } from '../components/tts/Footer';
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
       <Frameworks />
       <Stack />
       <Testimonials />
-      <Contact />
+      <IntakeSection />
       <Footer />
     </div>
   );

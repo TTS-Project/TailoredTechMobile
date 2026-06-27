@@ -26,6 +26,8 @@
   --neon-blue: #00aaff;
   --neon-violet: #8855ff;
   --neon-cyan: #00ffcc;
+  --brand-red: #ef4444;
+  --brand-red-soft: rgba(239, 68, 68, 0.55);
   --border-subtle: rgba(212, 168, 67, 0.12);
   --border-glass: rgba(255, 255, 255, 0.06);
 }
@@ -211,27 +213,32 @@ code { font-family: 'Geist Mono', monospace; }
 }
 @keyframes tts-tech-flicker {
   0%, 100% { text-shadow: 0 0 0 transparent; }
-  50%      { text-shadow: 0 0 14px rgba(212,168,67,0.55), 0 0 4px rgba(212,168,67,0.85); }
+  50%      { text-shadow: 0 0 14px rgba(212,168,67,0.55), 0 0 4px rgba(212,168,67,0.9); }
 }
 .tts-logo-aura {
   position: absolute;
-  inset: -8px;
-  border-radius: 18px;
+  inset: -10px;
+  border-radius: 20px;
   background:
-    radial-gradient(circle at 30% 30%, rgba(0,170,255,0.55), transparent 60%),
-    radial-gradient(circle at 70% 70%, rgba(136,85,255,0.55), transparent 60%),
-    radial-gradient(circle at 50% 50%, rgba(212,168,67,0.30), transparent 70%);
-  filter: blur(12px);
+    radial-gradient(circle at 30% 30%, rgba(0,170,255,0.50), transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(136,85,255,0.45), transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(239,68,68,0.18), transparent 70%);
+  filter: blur(14px);
   z-index: 0;
   pointer-events: none;
   animation: tts-logo-glow-pulse 3.2s ease-in-out infinite;
+}
+.tts-logo-img {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.45)) drop-shadow(0 0 8px rgba(0,170,255,0.18));
 }
 .tts-spark {
   position: absolute;
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff7d6 0%, #d4a843 45%, transparent 70%);
+  background: radial-gradient(circle, #ffffff 0%, #d4a843 45%, transparent 70%);
   box-shadow: 0 0 6px rgba(255,235,170,0.9);
   animation: tts-spark-pop 2.8s ease-in-out infinite;
   pointer-events: none;
@@ -248,3 +255,38 @@ code { font-family: 'Geist Mono', monospace; }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ===== Custom range slider for intake scale questions ===== */
+.tts-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--gold-bright) 0%, var(--gold-bright) var(--pct, 0%), rgba(255,255,255,0.08) var(--pct, 0%), rgba(255,255,255,0.08) 100%);
+  outline: none;
+  cursor: pointer;
+}
+.tts-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  border: 2px solid #1a1208;
+  box-shadow: 0 0 0 1px var(--gold-bright), 0 0 14px rgba(212,168,67,0.55);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+.tts-range::-webkit-slider-thumb:hover { transform: scale(1.1); }
+.tts-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  border: 2px solid #1a1208;
+  box-shadow: 0 0 0 1px var(--gold-bright), 0 0 14px rgba(212,168,67,0.55);
+  cursor: pointer;
+}
+.tts-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(212,168,67,0.45), 0 0 14px rgba(212,168,67,0.55); }
