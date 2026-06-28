@@ -298,3 +298,8 @@ async def setup_auth(db) -> None:
             {"email": admin_email},
             {"$set": {"password_hash": hash_password(admin_password)}},
         )
+
+    # Always clear lockout counter for the admin on startup so a deploy/restart
+    # guarantees the admin can sign in — protects against cross-device lockout
+    # accumulation from multiple browsers/tablets/phones.
+    await db.login_attempts.delete_many({"identifier": f"email:{admin_email}"})

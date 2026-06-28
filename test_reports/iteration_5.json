@@ -1,0 +1,29 @@
+{
+  "summary": "Verified the admin-lockout-clear-on-startup fix. Created /app/backend/tests/test_admin_lockout_clear.py (5 tests, all pass in ~9s, sequential -n 0 since they share the admin's login_attempts row). Confirmed: admin login with gwaltney@tailoredtechsolutions.org / 0neSpeed! returns 200 with {user, access_token} and sets access_token+refresh_token cookies with HttpOnly+Secure+SameSite=None; /api/auth/me works with both Bearer header (cross-device fallback) and cookie (primary); 5 wrong-password attempts -> 6th = 429 with detail 'Too many failed attempts...'; even the CORRECT admin password is rejected (429) while locked; after `sudo supervisorctl restart backend` the admin is INSTANTLY unlocked (200), while a separately-locked non-admin user remains 429 — proving setup_auth wipes ONLY the admin counter. Frontend AuthGate regression also passes in a clean browser context (cookies + localStorage cleared): overlay is dismissed post-login, JWT lands in localStorage `tts:auth:token`, and the protected home content (services pills, T avatar) renders. Side-fix: updated /app/backend/tests/test_auth_and_regression.py ADMIN_PASSWORD constant from the stale 'TailoredAdmin2026!' to '0neSpeed!' so the existing regression suite keeps passing.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": { "ui_bugs": [], "integration_issues": [], "design_issues": [] },
+  "test_report_links": [
+    "/app/backend/tests/test_admin_lockout_clear.py",
+    "/app/test_reports/pytest/admin_lockout_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "auth.py setup_auth: deletes login_attempts only for the admin email. Good for this bug, but the lockout key is still purely email-based (per the comment on L209). A coordinated attacker can lock out ANY user (e.g. a customer) by guessing 5x — they have no restart-relief. Consider also keying on (email+IP) tuple OR adding an admin-style auto-clear job (cron) for all users older than LOCKOUT_MINUTES. Current behavior is documented and acceptable for now.",
+    "auth.py _check_locked_out: returns lockout based on last_at + 15 min. The counter is never decremented — once at 5, every failed attempt during the window slides last_at forward indefinitely. Means an attacker spamming wrong passwords keeps a real user locked out forever. Cap incrementing after MAX_LOGIN_FAILS is reached.",
+    "auth.py _set_auth_cookies: Secure=True is hardcoded. Fine for the K8s HTTPS preview, but local `http://localhost` dev (if anyone runs it) will silently fail to receive cookies (Chrome drops Secure cookies over http). Consider env-gated: secure = os.environ.get('COOKIE_SECURE', 'true').lower() == 'true'.",
+    "auth.py: login route ignores `request` (commented kept-for-future). Either wire per-IP counter now or drop the unused param to keep the signature honest.",
+    "Test suite hygiene: /app/backend/tests/test_auth_and_regression.py hardcoded the old admin password and silently went stale when the password rotated to 0neSpeed!. Pull ADMIN_PASSWORD from env (same source as the server) so password rotations don't require test edits. Already patched the literal; env-source is a follow-up."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_lockout_clear.py",
+    "/app/backend/tests/test_auth_and_regression.py",
+    "/app/test_reports/iteration_5.json"
+  ],
+  "success_rate": { "backend": "100% (5/5 admin-lockout-clear)", "frontend": "100% (AuthGate dismiss flow)" },
+  "test_credentials": "Admin: gwaltney@tailoredtechsolutions.org / 0neSpeed! (verified against /api/auth/login, ADMIN_PASSWORD env, and /api/auth/me).",
+  "seed_data_creation": "Each run of TestRestartClearsAdminLockout registers ONE throwaway non-admin (`test_other_*@example.com`) and intentionally locks them out. They remain in db.users + db.login_attempts after the test (no PII, no impact on app surface). Safe to leave.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run admin lockout regression with: `pytest /app/backend/tests/test_admin_lockout_clear.py -v -n 0` (MUST be -n 0 — the 3 classes mutate the admin's login_attempts row and will race under xdist's -n 2). The test triggers a real `sudo supervisorctl restart backend` and polls /api/auth/me until 401 (~3-5s). If you re-run repeatedly, each run leaves the admin's counter cleaned up automatically by the fix being verified. Admin password is `0neSpeed!` (sourced from ADMIN_PASSWORD env var in backend/.env). All cookie assertions key off the `Set-Cookie` header text containing HttpOnly + Secure + SameSite=None.",
+  "rca_of_the_issue": "Root cause of the original 'cant log in from tablet AND computer' bug: brute-force lockout in auth.py is keyed purely by email (`identifier = f'email:{email}'`), so failed attempts from multiple devices/browsers/IPs all aggregate against the same row. Five wrong tries from any combination of devices -> admin is locked out for 15 minutes, sliding forward on every subsequent attempt. Fix verified here: setup_auth() now runs `db.login_attempts.delete_many({'identifier': f'email:{admin_email}'})` on every backend startup, guaranteeing that any deploy/restart unlocks the admin. Verified empirically: locked admin (429) -> supervisorctl restart -> immediate 200 with correct password. Non-admin lockout intentionally NOT wiped (verified to still 429 after restart), preserving brute-force protection for regular users."
+}

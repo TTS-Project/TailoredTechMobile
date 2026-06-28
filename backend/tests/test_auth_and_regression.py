@@ -19,7 +19,7 @@ BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://custom-ai-build-7.pr
 API = f"{BASE_URL}/api"
 
 ADMIN_EMAIL = "gwaltney@tailoredtechsolutions.org"
-ADMIN_PASSWORD = "TailoredAdmin2026!"
+ADMIN_PASSWORD = "0neSpeed!"
 
 
 def _rand_email(prefix="test_user"):

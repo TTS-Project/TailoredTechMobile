@@ -39,6 +39,7 @@ export const PROJECTS = [
   },
   {
     id: 'sentinel-shield',
+    cover: '/logos/projects/sentinel-shield.jpg',
     name: 'Sentinel Shield',
     client: 'Northwind Financial',
     industry: 'Fintech',
@@ -228,6 +229,7 @@ export const PROJECTS = [
   },
   {
     id: 'phatbootyleigh',
+    cover: '/logos/projects/phatbootyleigh.jpg',
     name: 'PhatBootyLeigh',
     client: 'Leigh — Personal Brand',
     industry: 'Lifestyle & Fitness',
