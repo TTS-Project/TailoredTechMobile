@@ -212,6 +212,10 @@ def build_paypal_router(db, get_current_user) -> APIRouter:
             data = r.json()
 
         # Verify captured amount matches our deposit
+        # Pre-init so static analyzers can see these are defined on every successful path.
+        captured_value = 0.0
+        captured_currency = ""
+        paypal_capture_id = ""
         try:
             capture = data["purchase_units"][0]["payments"]["captures"][0]
             captured_value = float(capture["amount"]["value"])
