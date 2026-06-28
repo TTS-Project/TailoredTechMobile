@@ -13,7 +13,7 @@ export function Hero() {
         <div>
           <div className="eyebrow mb-5 sm:mb-6">[ AI Product Studio ]</div>
           <h1 className="font-display text-[34px] leading-[1.05] sm:text-5xl md:text-[88px] md:leading-[0.95] font-extrabold tracking-tight md:tracking-tighter text-chrome">
-            We Build Intelligence — <span className="gold-text-gradient italic">Tailored.</span>
+            We Build Intelligence — <span className="gold-text-gradient italic hero-tailored-glow">Tailored.</span>
           </h1>
           <p className="mt-6 sm:mt-8 max-w-[58ch] text-base md:text-lg text-secondary-soft leading-relaxed">
             Custom AI applications, embedded systems, and product experiences designed for the companies that refuse to be generic.

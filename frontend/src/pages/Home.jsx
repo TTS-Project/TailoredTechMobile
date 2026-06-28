@@ -18,11 +18,14 @@ export default function Home() {
   return (
     <div>
       <Nav />
-      {/* Hero stays fully visible to everyone. */}
+      {/* Public lead-in: the 7-section calibration scroll. */}
       <SnapScrollHero />
-      <Hero />
-      {/* Everything below the Hero is gated behind authentication. */}
+      {/* Everything below — including the "We Build Intelligence Tailored" hero
+          — is gated behind authentication. Users see Calibration Complete and
+          then the sign-in/sign-up gate. After auth, the brand hero is the FIRST
+          thing they see. */}
       <AuthGate>
+        <Hero />
         <Marquee />
         <Services />
         <Projects />
