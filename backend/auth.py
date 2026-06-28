@@ -10,13 +10,12 @@ from __future__ import annotations
 
 import os
 import re
+import uuid
+from datetime import UTC, datetime, timedelta
+
 import bcrypt
 import jwt
-import uuid
-from datetime import datetime, timezone, timedelta
-from typing import Optional
-
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 JWT_ALGORITHM = "HS256"
@@ -52,7 +51,7 @@ def create_access_token(user_id: str, email: str) -> str:
         "sub": user_id,
         "email": email,
         "type": "access",
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TTL_MIN),
+        "exp": datetime.now(UTC) + timedelta(minutes=ACCESS_TTL_MIN),
     }
     return jwt.encode(payload, _secret(), algorithm=JWT_ALGORITHM)
 
@@ -61,7 +60,7 @@ def create_refresh_token(user_id: str) -> str:
     payload = {
         "sub": user_id,
         "type": "refresh",
-        "exp": datetime.now(timezone.utc) + timedelta(days=REFRESH_TTL_DAYS),
+        "exp": datetime.now(UTC) + timedelta(days=REFRESH_TTL_DAYS),
     }
     return jwt.encode(payload, _secret(), algorithm=JWT_ALGORITHM)
 
@@ -132,10 +131,10 @@ def make_get_current_user(db):
             raise HTTPException(status_code=401, detail="Not authenticated")
         try:
             payload = jwt.decode(token, _secret(), algorithms=[JWT_ALGORITHM])
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="Token expired")
-        except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid token")
+        except jwt.ExpiredSignatureError as exc:
+            raise HTTPException(status_code=401, detail="Token expired") from exc
+        except jwt.InvalidTokenError as exc:
+            raise HTTPException(status_code=401, detail="Invalid token") from exc
         if payload.get("type") != "access":
             raise HTTPException(status_code=401, detail="Invalid token type")
         user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password_hash": 0})
@@ -149,12 +148,12 @@ def make_get_current_user(db):
 async def _record_failed_login(db, identifier: str) -> None:
     await db.login_attempts.update_one(
         {"identifier": identifier},
-        {"$inc": {"count": 1}, "$set": {"last_at": datetime.now(timezone.utc).isoformat()}},
+        {"$inc": {"count": 1}, "$set": {"last_at": datetime.now(UTC).isoformat()}},
         upsert=True,
     )
 
 
-async def _check_locked_out(db, identifier: str) -> Optional[int]:
+async def _check_locked_out(db, identifier: str) -> int | None:
     """Return seconds remaining if locked, else None."""
     doc = await db.login_attempts.find_one({"identifier": identifier})
     if not doc or doc.get("count", 0) < MAX_LOGIN_FAILS:
@@ -167,7 +166,7 @@ async def _check_locked_out(db, identifier: str) -> Optional[int]:
     except ValueError:
         return None
     unlock_at = last + timedelta(minutes=LOCKOUT_MINUTES)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if now >= unlock_at:
         await db.login_attempts.delete_one({"identifier": identifier})
         return None
@@ -189,7 +188,7 @@ def build_auth_router(db) -> APIRouter:
         existing = await db.users.find_one({"email": email})
         if existing:
             raise HTTPException(status_code=409, detail="An account with that email already exists.")
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
         user_doc = {
             "id": str(uuid.uuid4()),
             "email": email,
@@ -240,7 +239,7 @@ def build_auth_router(db) -> APIRouter:
         await db.login_attempts.delete_many({"identifier": f"email:{user['email']}"})
         await db.orders.update_many(
             {"user_id": user["id"]},
-            {"$set": {"user_email": "deleted@account", "personal_data_deleted_at": datetime.now(timezone.utc).isoformat()}},
+            {"$set": {"user_email": "deleted@account", "personal_data_deleted_at": datetime.now(UTC).isoformat()}},
         )
         _clear_auth_cookies(response)
         return {"ok": True, "deleted": True}
@@ -256,10 +255,10 @@ def build_auth_router(db) -> APIRouter:
             raise HTTPException(status_code=401, detail="No refresh token")
         try:
             payload = jwt.decode(token, _secret(), algorithms=[JWT_ALGORITHM])
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="Refresh token expired")
-        except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
+        except jwt.ExpiredSignatureError as exc:
+            raise HTTPException(status_code=401, detail="Refresh token expired") from exc
+        except jwt.InvalidTokenError as exc:
+            raise HTTPException(status_code=401, detail="Invalid refresh token") from exc
         if payload.get("type") != "refresh":
             raise HTTPException(status_code=401, detail="Invalid token type")
         user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password_hash": 0})
@@ -292,7 +291,7 @@ async def setup_auth(db) -> None:
             "name": "Tailored Tech Admin",
             "password_hash": hash_password(admin_password),
             "role": "admin",
-            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         })
     elif not verify_password(admin_password, existing.get("password_hash", "")):
         await db.users.update_one(

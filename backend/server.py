@@ -1,23 +1,23 @@
-from fastapi import FastAPI, APIRouter, HTTPException
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+import asyncio
+import logging
 import os
 import smtplib
 import ssl
-import asyncio
-import logging
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
-from typing import List, Dict, Any, Optional
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from pathlib import Path
+from typing import Any
 
-from auth import build_auth_router, setup_auth, make_get_current_user
+from dotenv import load_dotenv
+from fastapi import APIRouter, FastAPI, HTTPException
+from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from starlette.middleware.cors import CORSMiddleware
+
+from auth import build_auth_router, make_get_current_user, setup_auth
 from paypal_checkout import build_paypal_router, setup_paypal
-
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -37,10 +37,10 @@ api_router = APIRouter(prefix="/api")
 # Define Models
 class StatusCheck(BaseModel):
     model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 class StatusCheckCreate(BaseModel):
     client_name: str
@@ -49,13 +49,13 @@ class StatusCheckCreate(BaseModel):
 class IntakeContact(BaseModel):
     name: str
     email: EmailStr
-    company: Optional[str] = ""
+    company: str | None = ""
 
 class IntakeSubmission(BaseModel):
     model_config = ConfigDict(extra="ignore")
     contact: IntakeContact
-    answers: Dict[str, Any] = Field(default_factory=dict)
-    meta: Optional[Dict[str, Any]] = None
+    answers: dict[str, Any] = Field(default_factory=dict)
+    meta: dict[str, Any] | None = None
 
 
 # ---------- Intake question metadata (mirrors the frontend) ----------
@@ -110,7 +110,7 @@ def _build_email_bodies(submission: IntakeSubmission) -> tuple[str, str]:
         )
 
     submitted_at = (submission.meta or {}).get("submittedAt") if submission.meta else None
-    submitted_str = submitted_at or datetime.now(timezone.utc).isoformat()
+    submitted_str = submitted_at or datetime.now(UTC).isoformat()
 
     text_body = (
         f"New AI Readiness Diagnostic submission\n"
@@ -149,7 +149,7 @@ def _build_email_bodies(submission: IntakeSubmission) -> tuple[str, str]:
     return text_body, html_body
 
 
-def _send_email_smtp(subject: str, text_body: str, html_body: str, reply_to: Optional[str] = None) -> bool:
+def _send_email_smtp(subject: str, text_body: str, html_body: str, reply_to: str | None = None) -> bool:
     """Send via SMTP if env vars are configured. Returns True on success."""
     host = os.environ.get("SMTP_HOST")
     port = int(os.environ.get("SMTP_PORT", "587") or 587)
@@ -201,24 +201,24 @@ async def root():
 async def create_status_check(input: StatusCheckCreate):
     status_dict = input.model_dump()
     status_obj = StatusCheck(**status_dict)
-    
+
     # Convert to dict and serialize datetime to ISO string for MongoDB
     doc = status_obj.model_dump()
     doc['timestamp'] = doc['timestamp'].isoformat()
-    
+
     _ = await db.status_checks.insert_one(doc)
     return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
+@api_router.get("/status", response_model=list[StatusCheck])
 async def get_status_checks():
     # Exclude MongoDB's _id field from the query results
     status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
+
     # Convert ISO string timestamps back to datetime objects
     for check in status_checks:
         if isinstance(check['timestamp'], str):
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
+
     return status_checks
 
 
@@ -232,7 +232,7 @@ async def submit_intake(submission: IntakeSubmission):
             "contact": submission.contact.model_dump(),
             "answers": submission.answers,
             "meta": submission.meta or {},
-            "received_at": datetime.now(timezone.utc).isoformat(),
+            "received_at": datetime.now(UTC).isoformat(),
         }
         await db.intake_submissions.insert_one(doc)
 
@@ -251,7 +251,7 @@ async def submit_intake(submission: IntakeSubmission):
         }
     except Exception as e:
         logger.exception("intake submission failed")
-        raise HTTPException(status_code=500, detail=f"intake_failed: {e.__class__.__name__}")
+        raise HTTPException(status_code=500, detail=f"intake_failed: {e.__class__.__name__}") from e
 
 
 @api_router.get("/intake/count")

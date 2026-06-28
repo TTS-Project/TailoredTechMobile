@@ -1,0 +1,50 @@
+# Project-level ruff config for Tailored Tech Solutions backend.
+#
+# We pin a focused, pragmatic ruleset so external code-review bots run with the
+# same rules we run locally. Rules that historically produced false positives
+# on this codebase (e.g. flagging `is None` as wrong, or panicking about
+# variables defined inside `try` blocks whose `except` raises) are explicitly
+# excluded.
+
+target-version = "py311"
+line-length = 120
+
+# Files / dirs ruff should ignore entirely.
+extend-exclude = [
+    "__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+    "node_modules",
+]
+
+[lint]
+# Curated set — covers genuine bug risk without busywork.
+#   E/W  : pycodestyle errors and warnings
+#   F    : pyflakes (undefined names, unused imports, real bugs)
+#   B    : flake8-bugbear (likely-bug patterns)
+#   I    : isort (import ordering)
+#   UP   : pyupgrade (modern syntax)
+#   N    : pep8 naming
+#   SIM  : flake8-simplify (objectively simpler alternatives)
+select = ["E", "W", "F", "B", "I", "UP", "N", "SIM"]
+
+# Deliberately disabled rules with reasons:
+#   E501  : we set line-length 120 above; the long-line rule still warns on
+#           edge cases inside strings/URLs which we accept.
+#   B008  : function calls in default args — FastAPI's `Depends(...)` idiom.
+#   N818  : exception names must end in "Error" — HTTPException etc. don't.
+#   UP007 : "use X | Y" — fine, but our codebase already uses Optional[X]
+#           in places and rewriting all of them is busywork.
+#   SIM108: "use ternary" — sometimes if/else is more readable.
+ignore = ["E501", "B008", "N818", "UP007", "SIM108"]
+
+[lint.per-file-ignores]
+# Tests can have unused fixtures, long lines, skipped naming conventions,
+# unsorted imports, and unused loop control variables for clarity.
+"tests/**" = ["E501", "F401", "F841", "N802", "N803", "B007", "I001"]
+"**/test_*.py" = ["E501", "F401", "F841", "N802", "N803", "B007", "I001"]
+
+[lint.isort]
+known-first-party = ["auth", "paypal_checkout", "server"]

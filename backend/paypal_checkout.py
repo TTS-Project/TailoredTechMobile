@@ -12,17 +12,14 @@ Security model:
 """
 from __future__ import annotations
 
-import os
-import json
-import uuid
-import httpx
 import logging
-from datetime import datetime, timezone
-from typing import Optional
-from pathlib import Path
+import os
+import uuid
+from datetime import UTC, datetime
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 logger = logging.getLogger("paypal")
 
@@ -183,7 +180,7 @@ def build_paypal_router(db, get_current_user) -> APIRouter:
             "paypal_order_id": pp["id"],
             "paypal_capture_id": None,
             "status": "pending",
-            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(UTC).isoformat(),
         })
         return {"orderID": pp["id"], "order_id": internal_id, "amounts": amounts}
 
@@ -223,7 +220,7 @@ def build_paypal_router(db, get_current_user) -> APIRouter:
             paypal_capture_id = capture["id"]
         except (KeyError, IndexError, ValueError) as e:
             logger.error("PayPal capture response malformed: %s — %s", e, data)
-            raise HTTPException(status_code=502, detail="Malformed PayPal capture response.")
+            raise HTTPException(status_code=502, detail="Malformed PayPal capture response.") from e
 
         expected = float(order["deposit"])
         amount_matches = abs(captured_value - expected) < 0.01 and captured_currency == order["currency"]
@@ -235,7 +232,7 @@ def build_paypal_router(db, get_current_user) -> APIRouter:
                 "status": new_status,
                 "paypal_capture_id": paypal_capture_id,
                 "paid_amount": _round2(captured_value),
-                "paid_at": datetime.now(timezone.utc).isoformat(),
+                "paid_at": datetime.now(UTC).isoformat(),
                 "paypal_capture_raw": data,
             }},
         )
