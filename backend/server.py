@@ -264,15 +264,26 @@ app.include_router(api_router)
 app.include_router(build_auth_router(db), prefix="/api")
 app.include_router(build_paypal_router(db, make_get_current_user(db)), prefix="/api")
 
-# CORS with credentials requires explicit origins (no wildcard).
-_cors_origins = [o.strip() for o in os.environ.get('CORS_ORIGINS', '').split(',') if o.strip()]
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=_cors_origins or ["http://localhost:3000"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS — credentials require origin echoing (no plain wildcard). When CORS_ORIGINS="*"
+# we use `allow_origin_regex=".*"` so the deployed app works at any domain while still
+# allowing the auth cookies to flow.
+_cors_raw = [o.strip() for o in os.environ.get('CORS_ORIGINS', '').split(',') if o.strip()]
+if "*" in _cors_raw:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_credentials=True,
+        allow_origin_regex=".*",
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_credentials=True,
+        allow_origins=_cors_raw or ["http://localhost:3000"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Configure logging
 logging.basicConfig(
