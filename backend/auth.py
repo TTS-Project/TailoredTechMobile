@@ -232,6 +232,19 @@ def build_auth_router(db) -> APIRouter:
         _clear_auth_cookies(response)
         return {"ok": True}
 
+    @router.delete("/account")
+    async def delete_account(response: Response, user: dict = Depends(get_current_user)):
+        # Remove the user document and any throttling state. Order history is intentionally
+        # retained (anonymised) — see Privacy Policy §4 — but we strip the personal link.
+        await db.users.delete_one({"id": user["id"]})
+        await db.login_attempts.delete_many({"identifier": f"email:{user['email']}"})
+        await db.orders.update_many(
+            {"user_id": user["id"]},
+            {"$set": {"user_email": "deleted@account", "personal_data_deleted_at": datetime.now(timezone.utc).isoformat()}},
+        )
+        _clear_auth_cookies(response)
+        return {"ok": True, "deleted": True}
+
     @router.get("/me")
     async def me(user: dict = Depends(get_current_user)):
         return {"user": _public(user)}

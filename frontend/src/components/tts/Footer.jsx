@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Headphones, LifeBuoy } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -44,7 +45,7 @@ export function Footer() {
         </div>
 
         {/* Company column (Frameworks & Careers removed; Terra Farming -> terrafarming.io) */}
-        <div className="md:col-span-3 md:col-start-7">
+        <div className="md:col-span-2 md:col-start-7">
           <div className="text-[11px] font-mono uppercase tracking-widest text-gold-dim mb-4">Company</div>
           <ul className="space-y-3 text-sm">
             <li><a href="/#about"   className="text-chrome-mid hover:text-gold transition-colors">About</a></li>
@@ -59,8 +60,18 @@ export function Footer() {
           </ul>
         </div>
 
+        {/* Legal column */}
+        <div className="md:col-span-2">
+          <div className="text-[11px] font-mono uppercase tracking-widest text-gold-dim mb-4">Legal</div>
+          <ul className="space-y-3 text-sm">
+            <li><Link to="/privacy" data-testid="footer-link-privacy" className="text-chrome-mid hover:text-gold transition-colors">Privacy Policy</Link></li>
+            <li><Link to="/terms"   data-testid="footer-link-terms"   className="text-chrome-mid hover:text-gold transition-colors">Terms of Service</Link></li>
+            <li><Link to="/support" data-testid="footer-link-support" className="text-chrome-mid hover:text-gold transition-colors">Help & Support</Link></li>
+          </ul>
+        </div>
+
         {/* Contact column */}
-        <div className="md:col-span-3">
+        <div className="md:col-span-2">
           <div className="text-[11px] font-mono uppercase tracking-widest text-gold-dim mb-4">Contact</div>
           <ul className="space-y-3 text-sm">
             <li><a href="mailto:gwaltney@tailoredtechsolutions.org" className="text-chrome-mid hover:text-gold transition-colors break-all">gwaltney@tailoredtechsolutions.org</a></li>

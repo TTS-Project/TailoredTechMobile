@@ -5,6 +5,9 @@ import Home from './pages/Home';
 import ProjectsPage from './pages/Projects';
 import IntakePage from './pages/Intake';
 import CheckoutPage from './pages/Checkout';
+import PrivacyPage from './pages/Privacy';
+import TermsPage from './pages/Terms';
+import SupportPage from './pages/Support';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartToast } from './components/tts/CartToast';
@@ -20,6 +23,9 @@ function App() {
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/intake" element={<IntakePage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/support" element={<SupportPage />} />
             </Routes>
             <CartToast />
           </BrowserRouter>

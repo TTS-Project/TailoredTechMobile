@@ -83,6 +83,12 @@ export function AuthProvider({ children }) {
     setUser(false);
   }, []);
 
+  const deleteAccount = useCallback(async () => {
+    await apiFetch('/auth/account', { method: 'DELETE' });
+    localStorage.removeItem(TOKEN_KEY);
+    setUser(false);
+  }, []);
+
   const value = useMemo(() => ({
     user,
     isChecking: user === null,
@@ -90,7 +96,8 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
-  }), [user, login, register, logout]);
+    deleteAccount,
+  }), [user, login, register, logout, deleteAccount]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
