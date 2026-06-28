@@ -7,13 +7,13 @@ function loadCart() {
     const raw = localStorage.getItem(CART_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch (err) {
-    console.warn('Failed to read cart from localStorage:', err);
+    if (process.env.NODE_ENV !== 'production') console.warn('Failed to read cart from localStorage:', err);
     return [];
   }
 }
 function saveCart(items) {
   try { localStorage.setItem(CART_KEY, JSON.stringify(items)); }
-  catch (err) { console.warn('Failed to persist cart to localStorage:', err); }
+  catch (err) { if (process.env.NODE_ENV !== 'production') console.warn('Failed to persist cart to localStorage:', err); }
 }
 
 const CartContext = createContext(null);

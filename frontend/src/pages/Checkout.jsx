@@ -131,7 +131,7 @@ export default function CheckoutPage() {
                           navigate(`/intake?paid=true&order=${encodeURIComponent(json.order_id)}`);
                         }}
                         onError={(err) => {
-                          console.error('PayPal error', err);
+                          if (process.env.NODE_ENV !== 'production') console.error('PayPal error', err);
                           setError('PayPal checkout failed. Please try again.');
                         }}
                         onCancel={() => setError('Checkout cancelled. Your cart is still saved.')}

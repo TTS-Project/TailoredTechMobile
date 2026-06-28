@@ -14,7 +14,7 @@ function loadFavs() {
   try {
     return JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
   } catch (err) {
-    console.warn('Failed to read favourite projects from localStorage:', err);
+    if (process.env.NODE_ENV !== 'production') console.warn('Failed to read favourite projects from localStorage:', err);
     return [];
   }
 }
@@ -22,7 +22,7 @@ function saveFavs(arr) {
   try {
     localStorage.setItem(FAV_KEY, JSON.stringify(arr));
   } catch (err) {
-    console.warn('Failed to persist favourite projects to localStorage:', err);
+    if (process.env.NODE_ENV !== 'production') console.warn('Failed to persist favourite projects to localStorage:', err);
   }
 }
 
@@ -209,7 +209,7 @@ export default function ProjectsPage() {
         <div>
           <div className="eyebrow">Live Portfolio</div>
           <h1 className="mt-3 font-display text-[30px] sm:text-4xl md:text-5xl font-bold tracking-tight text-chrome leading-tight">
-            Projects we've <span className="gold-text-gradient">shipped & shipping.</span>
+            Projects we&apos;ve <span className="gold-text-gradient">shipped & shipping.</span>
           </h1>
           <p className="mt-4 text-sm sm:text-base text-secondary-soft max-w-2xl leading-relaxed">
             A live operations view across every TTS engagement — active builds, recent deliveries, and upcoming work. Filter, sort, and dive into any project.
