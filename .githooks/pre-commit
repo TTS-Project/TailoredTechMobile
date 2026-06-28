@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Tailored Tech Solutions — git pre-commit hook
+#
+# Runs the two project linters before allowing a commit through. To enable for
+# this repo, run once:
+#
+#     git config --local core.hooksPath .githooks
+#
+# (The /app/scripts/install-hooks.sh script does this for you.)
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+echo "🔎  Running ESLint on frontend…"
+( cd "$REPO_ROOT/frontend" && yarn --silent lint )
+
+echo "🔎  Running ruff on backend…"
+( cd "$REPO_ROOT/backend" && ruff check . )
+
+echo "✅  Lint passed — committing."
