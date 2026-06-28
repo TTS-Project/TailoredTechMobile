@@ -57,6 +57,7 @@ export const PROJECTS = [
   },
   {
     id: 'helix-crm',
+    cover: '/logos/projects/helix-crm.jpg',
     name: 'Helix CRM',
     client: 'Meridian Sales Group',
     industry: 'Sales / SaaS',
@@ -75,6 +76,7 @@ export const PROJECTS = [
   },
   {
     id: 'lumen-content',
+    cover: '/logos/projects/lumen-content.jpg',
     name: 'Lumen Content Engine',
     client: 'Apex Marketing Group',
     industry: 'Marketing',
@@ -93,6 +95,7 @@ export const PROJECTS = [
   },
   {
     id: 'voxa-agents',
+    cover: '/logos/projects/voxa-agents.jpg',
     name: 'Voxa Voice Agents',
     client: 'Cascade Outbound Co.',
     industry: 'Sales / AI',
@@ -111,6 +114,7 @@ export const PROJECTS = [
   },
   {
     id: 'aegis-monitor',
+    cover: '/logos/projects/aegis-monitor.jpg',
     name: 'Aegis Network Monitor',
     client: 'Pacific Coast Telecom',
     industry: 'Telecom',
@@ -129,6 +133,7 @@ export const PROJECTS = [
   },
   {
     id: 'pulse-health',
+    cover: '/logos/projects/pulse-health.jpg',
     name: 'Pulse Health Dashboard',
     client: 'MedTrack Clinical',
     industry: 'Healthcare',
@@ -147,6 +152,7 @@ export const PROJECTS = [
   },
   {
     id: 'chorus-ops',
+    cover: '/logos/projects/chorus-ops.jpg',
     name: 'Chorus DevOps',
     client: 'Orbital Build Co.',
     industry: 'DevOps',
@@ -165,6 +171,7 @@ export const PROJECTS = [
   },
   {
     id: 'atlas-checkout',
+    cover: '/logos/projects/atlas-checkout.jpg',
     name: 'Atlas Checkout',
     client: 'Highland Goods',
     industry: 'E-Commerce',
@@ -183,6 +190,7 @@ export const PROJECTS = [
   },
   {
     id: 'beacon-routing',
+    cover: '/logos/projects/beacon-routing.jpg',
     name: 'Beacon Routing',
     client: 'LogiChain Co.',
     industry: 'Logistics',
@@ -201,6 +209,7 @@ export const PROJECTS = [
   },
   {
     id: 'kindred-chat',
+    cover: '/logos/projects/kindred-chat.jpg',
     name: 'Kindred Chat',
     client: 'Confidential — Enterprise',
     industry: 'Customer Support',
@@ -216,6 +225,25 @@ export const PROJECTS = [
     summary: 'Brand-voice chatbot with retrieval-augmented support; deflected 41% of L1 tickets.',
     metrics: { uptime: '99.96%', users: '12.8k', txnPerSec: 64 },
     splash: { background: 'linear-gradient(140deg,#3a0d2a 0%,#2a0d1a 60%,#180408 100%)', ring: 'rgba(244,114,182,0.40)', accent: '#f472b6' },
+  },
+  {
+    id: 'phatbootyleigh',
+    name: 'PhatBootyLeigh',
+    client: 'Leigh — Personal Brand',
+    industry: 'Lifestyle & Fitness',
+    category: 'Brand Site',
+    status: 'Active',
+    completion: 88,
+    startDate: '2026-01-08',
+    completionDate: '2026-03-15',
+    value: 14500,
+    views: 612,
+    tech: ['React', 'Vite', 'Tailwind', 'Framer Motion', 'Vercel'],
+    tags: ['Creator', 'Storefront', 'Mobile-first'],
+    summary: 'Creator-led brand site with shoppable lookbook, fan club opt-in, and gated premium content drops.',
+    metrics: { uptime: '99.99%', users: '612', txnPerSec: 8 },
+    splash: { background: 'linear-gradient(140deg,#3a0d28 0%,#2a0820 60%,#15040f 100%)', ring: 'rgba(236,72,153,0.45)', accent: '#ec4899' },
+    repo: 'https://github.com/TailoredTechSolutions/PhatBootyLeigh',
   },
 ];
 

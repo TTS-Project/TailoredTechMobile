@@ -50,13 +50,26 @@ export function Services() {
                 style={{border:'1px solid var(--border-subtle)'}}
                 onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--gold-bright)'}
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-subtle)'}>
-                <div className="h-32 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.18), rgba(13,13,26,0.7))' }}>
-                  <div className="absolute inset-0 circuit-grid opacity-50" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-5xl sm:text-6xl drop-shadow-[0_4px_24px_rgba(212,168,67,0.35)] transition-transform duration-500 group-hover:scale-110" aria-hidden="true">{s.emoji}</div>
+                {s.image ? (
+                  <div className="h-44 sm:h-48 relative overflow-hidden">
+                    <img
+                      src={s.image}
+                      alt={s.name}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(9,9,15,0) 50%, rgba(9,9,15,0.55) 100%)' }} />
+                    <span className="absolute top-3 right-3 text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded backdrop-blur-md" style={{ color: 'var(--gold-bright)', background: 'rgba(9,9,15,0.55)', border: '1px solid var(--gold-dim)' }}>{s.kind === 'product' ? 'Product' : 'Service'}</span>
                   </div>
-                  <span className="absolute top-3 right-3 text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded backdrop-blur-md" style={{ color: 'var(--gold-bright)', background: 'rgba(9,9,15,0.55)', border: '1px solid var(--gold-dim)' }}>{s.kind === 'product' ? 'Product' : 'Service'}</span>
-                </div>
+                ) : (
+                  <div className="h-32 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(212,168,67,0.18), rgba(13,13,26,0.7))' }}>
+                    <div className="absolute inset-0 circuit-grid opacity-50" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-5xl sm:text-6xl drop-shadow-[0_4px_24px_rgba(212,168,67,0.35)] transition-transform duration-500 group-hover:scale-110" aria-hidden="true">{s.emoji}</div>
+                    </div>
+                    <span className="absolute top-3 right-3 text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded backdrop-blur-md" style={{ color: 'var(--gold-bright)', background: 'rgba(9,9,15,0.55)', border: '1px solid var(--gold-dim)' }}>{s.kind === 'product' ? 'Product' : 'Service'}</span>
+                  </div>
+                )}
                 <div className="p-5 sm:p-6 flex flex-col gap-3">
                   <div>
                     <h3 className="font-display text-lg sm:text-xl font-semibold text-chrome leading-tight">

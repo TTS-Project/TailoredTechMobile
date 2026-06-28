@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, ArrowUpRight, Users, Activity, Calendar } from 'lucide-react';
+import { Star, ArrowUpRight, Users, Activity, Calendar, Github } from 'lucide-react';
 import { CircularProgress } from './StatsWidget';
 
 const STATUS_STYLE = {
@@ -29,14 +29,20 @@ export function ProjectCard({ project, view = 'grid', favorited, onToggleFavorit
         onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-subtle)'}
       >
         <div className="flex flex-col sm:flex-row">
-          <div className="relative w-full sm:w-44 h-32 sm:h-auto flex items-center justify-center shrink-0" style={{ background: project.splash.background }}>
-            <div className="absolute inset-0 opacity-60" style={{ background: `radial-gradient(circle at 50% 50%, ${project.splash.ring}, transparent 60%)` }} />
-            {project.logo ? (
-              <img src={project.logo} alt={project.name} className="relative h-20 max-w-[70%] object-contain" />
+          <div className="relative w-full sm:w-44 h-32 sm:h-auto flex items-center justify-center shrink-0 overflow-hidden" style={{ background: project.splash.background }}>
+            {project.cover ? (
+              <img src={project.cover} alt={project.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
             ) : (
-              <div className="relative font-display text-3xl font-bold" style={{color: project.splash.accent}}>
-                {project.name.split(' ').map(w => w[0]).join('').slice(0,2)}
-              </div>
+              <>
+                <div className="absolute inset-0 opacity-60" style={{ background: `radial-gradient(circle at 50% 50%, ${project.splash.ring}, transparent 60%)` }} />
+                {project.logo ? (
+                  <img src={project.logo} alt={project.name} className="relative h-20 max-w-[70%] object-contain" />
+                ) : (
+                  <div className="relative font-display text-3xl font-bold" style={{color: project.splash.accent}}>
+                    {project.name.split(' ').map(w => w[0]).join('').slice(0,2)}
+                  </div>
+                )}
+              </>
             )}
           </div>
           <div className="flex-1 p-5 sm:p-6 flex flex-col gap-3">
@@ -73,13 +79,23 @@ export function ProjectCard({ project, view = 'grid', favorited, onToggleFavorit
       onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-subtle)'}
     >
       <div className="relative h-44 sm:h-48 flex items-center justify-center overflow-hidden" style={{ background: project.splash.background }}>
-        <div className="absolute inset-0 opacity-60" style={{ background: `radial-gradient(circle at 50% 50%, ${project.splash.ring}, transparent 60%)` }} />
-        {project.logo ? (
-          <img src={project.logo} alt={project.name} className="relative h-28 max-w-[70%] object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)]" />
+        {project.cover ? (
+          <>
+            <img src={project.cover} alt={project.name} loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(9,9,15,0) 55%, rgba(9,9,15,0.45) 100%)' }} />
+          </>
         ) : (
-          <div className="relative font-display text-5xl font-bold transition-transform duration-500 group-hover:scale-105" style={{color: project.splash.accent, textShadow: `0 4px 18px ${project.splash.ring}`}}>
-            {project.name.split(' ').map(w => w[0]).join('').slice(0,2)}
-          </div>
+          <div className="absolute inset-0 opacity-60" style={{ background: `radial-gradient(circle at 50% 50%, ${project.splash.ring}, transparent 60%)` }} />
+        )}
+        {!project.cover && (
+          project.logo ? (
+            <img src={project.logo} alt={project.name} className="relative h-28 max-w-[70%] object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)]" />
+          ) : (
+            <div className="relative font-display text-5xl font-bold transition-transform duration-500 group-hover:scale-105" style={{color: project.splash.accent, textShadow: `0 4px 18px ${project.splash.ring}`}}>
+              {project.name.split(' ').map(w => w[0]).join('').slice(0,2)}
+            </div>
+          )
         )}
         <button onClick={(e) => { e.stopPropagation(); onToggleFavorite?.(project.id); }}
           className="absolute top-3 right-3 w-9 h-9 rounded-md flex items-center justify-center backdrop-blur-md transition"
@@ -117,9 +133,21 @@ export function ProjectCard({ project, view = 'grid', favorited, onToggleFavorit
             <span className="inline-flex items-center gap-1"><Activity size={10}/> {project.views.toLocaleString()}</span>
           </div>
         </div>
-        <button onClick={() => onOpen?.(project)} className="mt-3 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-semibold uppercase tracking-widest transition-all active:scale-[0.98] hover:opacity-90" style={{background:'rgba(212,168,67,0.10)', color:'var(--gold-bright)', borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}>
-          View details <ArrowUpRight size={14} />
-        </button>
+        <div className="flex items-center gap-2 mt-3">
+          <button onClick={() => onOpen?.(project)} className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-semibold uppercase tracking-widest transition-all active:scale-[0.98] hover:opacity-90" style={{background:'rgba(212,168,67,0.10)', color:'var(--gold-bright)', borderWidth:'1px', borderStyle:'solid', borderColor:'var(--gold-dim)'}}>
+            View details <ArrowUpRight size={14} />
+          </button>
+          {project.repo && (
+            <a href={project.repo} target="_blank" rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              data-testid={`project-repo-${project.id}`}
+              aria-label={`View ${project.name} source code on GitHub`}
+              className="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl transition-all active:scale-[0.98] hover:opacity-90"
+              style={{background:'rgba(255,255,255,0.04)', borderWidth:'1px', borderStyle:'solid', borderColor:'var(--border-subtle)', color:'var(--chrome)'}}>
+              <Github size={15} />
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );

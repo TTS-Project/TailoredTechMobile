@@ -5,13 +5,13 @@ import {
 } from 'lucide-react';
 
 const TABS = [
-  { id: 'admin',      label: 'Admin / HQ',      Icon: Building2 },
-  { id: 'farmer',     label: 'Farmer',          Icon: Tractor },
-  { id: 'buyer',      label: 'Buyer',           Icon: ShoppingBag },
-  { id: 'driver',     label: 'Driver',          Icon: Truck },
-  { id: 'business',   label: 'Business Center', Icon: BarChart3 },
-  { id: 'market',     label: 'Marketplace',     Icon: Store },
-  { id: 'farms',      label: 'Farms',           Icon: MapPin },
+  { id: 'admin',      label: 'Admin / HQ',      short: 'Admin',    Icon: Building2 },
+  { id: 'farmer',     label: 'Farmer',          short: 'Farmer',   Icon: Tractor },
+  { id: 'buyer',      label: 'Buyer',           short: 'Buyer',    Icon: ShoppingBag },
+  { id: 'driver',     label: 'Driver',          short: 'Driver',   Icon: Truck },
+  { id: 'business',   label: 'Business Center', short: 'Business', Icon: BarChart3 },
+  { id: 'market',     label: 'Marketplace',     short: 'Market',   Icon: Store },
+  { id: 'farms',      label: 'Farms',           short: 'Farms',    Icon: MapPin },
 ];
 
 const GREEN = '#7ac462';
@@ -256,12 +256,14 @@ export function TerraDashboard() {
 
   return (
     <div className="flex flex-col items-stretch gap-5 md:gap-8 md:flex-row md:items-stretch md:gap-10">
-      {/* Tab rail: horizontal scroll on mobile (above phone), vertical column on desktop (left of phone) */}
+      {/* Role rail:
+            • mobile: 4-column grid so ALL 7 roles are visible in a single screen — no scroll
+            • desktop: vertical column left of the phone preview (unchanged) */}
       <nav
         aria-label="Terra role view"
-        className="w-full md:w-48 flex md:flex-col gap-2 overflow-x-auto md:overflow-visible scrollbar-hidden snap-x snap-mandatory md:snap-none -mx-1 md:mx-0 px-1 md:px-0 pb-1 md:pb-0"
+        className="w-full md:w-48 grid grid-cols-4 gap-2 md:flex md:flex-col md:gap-2"
       >
-        {TABS.map(({ id, label, Icon }) => {
+        {TABS.map(({ id, label, short, Icon }) => {
           const isActive = active === id;
           return (
             <button
@@ -269,7 +271,8 @@ export function TerraDashboard() {
               type="button"
               onClick={() => setActive(id)}
               aria-pressed={isActive}
-              className="snap-start shrink-0 flex items-center gap-2.5 rounded-xl px-3.5 py-3 min-h-[48px] text-left transition-all active:scale-[0.98]"
+              aria-label={label}
+              className="flex flex-col md:flex-row items-center md:items-center justify-center md:justify-start gap-1.5 md:gap-2.5 rounded-xl px-1.5 md:px-3.5 py-2.5 md:py-3 min-h-[64px] md:min-h-[48px] text-center md:text-left transition-all active:scale-[0.97]"
               style={{
                 borderWidth: '1px',
                 borderStyle: 'solid',
@@ -287,7 +290,11 @@ export function TerraDashboard() {
                 }}>
                 <Icon size={13} />
               </span>
-              <span className="text-[12px] font-medium tracking-wide whitespace-nowrap">{label}</span>
+              {/* Short label on mobile (no scroll); full label on desktop */}
+              <span className="text-[11px] md:text-[12px] font-medium tracking-wide leading-tight md:whitespace-nowrap">
+                <span className="md:hidden">{short}</span>
+                <span className="hidden md:inline">{label}</span>
+              </span>
             </button>
           );
         })}
