@@ -85,14 +85,6 @@ export function Markets() {
               <p className="mt-3 text-secondary-soft max-w-md">Regional focus across Southeast and East Asia — mobile-first markets with high demand for custom platform engineering.</p>
               <a href="mailto:gwaltney@tailoredtechsolutions.org" className="mt-2 inline-block text-sm font-mono text-chrome hover:text-gold">gwaltney@tailoredtechsolutions.org</a>
             </div>
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full pulse-dot" style={{background:'var(--neon-cyan)'}} />
-                <div className="text-xs font-mono uppercase tracking-widest" style={{color:'var(--neon-cyan)'}}>EMEA · Strategic</div>
-              </div>
-              <p className="mt-3 text-secondary-soft max-w-md">Partnerships across the Middle East and Europe — led by co-founder Ameer Al Saati.</p>
-              <a href="mailto:alsaati@tailoredtechsolutions.org" className="mt-2 inline-block text-sm font-mono text-chrome hover:text-gold">alsaati@tailoredtechsolutions.org</a>
-            </div>
           </div>
         </Reveal>
         <Reveal delay={120}>

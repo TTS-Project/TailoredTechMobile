@@ -7,19 +7,10 @@ const FOUNDERS = [
     photo: '/logos/founder-andrew.jpg',
     photoPosition: '50% 30%',
     name: 'Andrew K. Gwaltney',
-    role: 'Co-Founder & CEO · PE',
+    role: 'Founder & CEO · PE',
     bio: "Andrew brings a rare combination of rigorous analytical engineering — honed through years of structural design — and full-stack software product development. He leads TTS's technical strategy, client relationships, and AI integration practice.",
     tags: ['AI Architecture', 'React / TypeScript', 'Supabase', 'Structural Engineering (PE)'],
     email: 'gwaltney@tailoredtechsolutions.org',
-  },
-  {
-    photo: '/logos/founder-ameer.jpg',
-    photoPosition: '50% 35%',
-    name: 'Ameer Al Saati',
-    role: 'Co-Founder & CTO',
-    bio: 'Ameer drives the engineering depth at TTS — from embedded systems and firmware to scalable cloud architectures. His background spans multiple technology domains with a focus on building systems that perform under real-world conditions.',
-    tags: ['Embedded Systems', 'Cloud Infrastructure', 'Mobile Development', 'Systems Architecture'],
-    email: 'alsaati@tailoredtechsolutions.org',
   },
 ];
 
@@ -28,12 +19,12 @@ export function Founders() {
     <section id="about" className="relative py-20 sm:py-24 md:py-32 bg-deep">
       <div className="max-w-[1400px] mx-auto px-5 sm:px-6 md:px-12">
         <Reveal>
-          <div className="eyebrow">The Builders</div>
+          <div className="eyebrow">The Builder</div>
           <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold tracking-tight text-chrome">
-            Two founders. <span className="gold-text-gradient">One standard.</span>
+            One founder. <span className="gold-text-gradient">One standard.</span>
           </h2>
         </Reveal>
-        <div className="mt-16 grid md:grid-cols-2 gap-6">
+        <div className="mt-16 grid md:grid-cols-1 max-w-2xl mx-auto gap-6">
           {FOUNDERS.map((f, i) => (
             <Reveal key={f.name} delay={i * 100}>
               <article className="h-full bg-card-soft rounded-2xl p-8 md:p-10 gold-diffuse transition-all"
