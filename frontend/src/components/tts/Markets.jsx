@@ -26,7 +26,6 @@ function continentDots() {
 const DOTS = continentDots();
 const PINS = {
   usa:  { x: 150, y: 175, color: '#d4a843', label: 'USA',  sub: 'HQ' },
-  emea: { x: 410, y: 185, color: '#00ffcc', label: 'EMEA', sub: 'Strategic' },
   apac: { x: 600, y: 230, color: '#00ffcc', label: 'APAC', sub: 'Active' },
 };
 
@@ -44,7 +43,6 @@ function WorldMap() {
         </radialGradient>
       </defs>
       <g>{DOTS.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r="1.6" fill="rgba(212,168,67,0.55)" opacity={d.o * 1.6} />)}</g>
-      <path d={`M ${PINS.usa.x} ${PINS.usa.y} Q ${(PINS.usa.x + PINS.emea.x) / 2} ${Math.min(PINS.usa.y, PINS.emea.y) - 80} ${PINS.emea.x} ${PINS.emea.y}`} fill="none" stroke="url(#arcGoldCyan)" strokeWidth="1.2" className="dash-flow" />
       <path d={`M ${PINS.usa.x} ${PINS.usa.y} Q ${(PINS.usa.x + PINS.apac.x) / 2} ${Math.min(PINS.usa.y, PINS.apac.y) - 130} ${PINS.apac.x} ${PINS.apac.y}`} fill="none" stroke="url(#arcGoldCyan)" strokeWidth="1.2" className="dash-flow" />
       {Object.values(PINS).map((p) => (
         <g key={p.label} style={{ color: p.color }}>
