@@ -7,6 +7,7 @@ Mobile app for tailoredtechsolutions.org. Two areas:
 
 ## Stack
 - React + Vite + TypeScript + Capacitor (no Expo — hard rule)
+- Uses npm; see [docs/bun-installation.md](docs/bun-installation.md) if you want Bun available locally
 - Supabase (auth + Postgres + storage)
 - Square API (shared catalog/checkout logic with the website)
 - Bundle ID: `org.tailoredtechsolutions.app`
